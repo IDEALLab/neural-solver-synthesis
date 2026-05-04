@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder-14b",
+  "seed": 101,
+  "job_id": "1315162",
+  "config_name": "config_ablation_prompt",
+  "method_name": "Ours (w/o Prompt)",
+  "embedded_model_path": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_ablation_prompt/job-1315162/checkpoint-90"
+}

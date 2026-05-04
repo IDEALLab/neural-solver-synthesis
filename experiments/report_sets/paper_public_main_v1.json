@@ -1,0 +1,69 @@
+{
+  "name": "paper_public_main_v1",
+  "description": "Canonical public paper manifest. Uses the refreshed ShinkaEvolve comparison while preserving the stable SDS comparison frame for all other methods.",
+  "notes": "This is the paper-facing source of truth for the final SDS and BigCode bundles on the public release branch.",
+  "sds": {
+    "result_roots": [
+      "evaluation/sds/results_batches/20251230_struct-feas-v1",
+      "evaluation/sds/results_batches/20251230_baselines-v1",
+      "evaluation/sds/results/shinka-evolve"
+    ],
+    "methods_included": {
+      "from_20251230_struct-feas-v1": [
+        "Ours (Hero) - 3 seeds",
+        "Ours (+Oracle) - 3 seeds",
+        "Ours (+Diversity) - 3 seeds",
+        "Ours (w/o Structure) - 3 seeds",
+        "Ours (w/o Prompt) - 3 seeds",
+        "Baselines extracted from Hero runs: CP-SAT, Local Search, Greedy, BnB"
+      ],
+      "from_20251230_baselines-v1": [
+        "Base (Best-of-64) - 3 seeds"
+      ],
+      "from_evaluation/sds/results/shinka-evolve": [
+        "ShinkaEvolve - refreshed SDS-1000 neutral-prompt rerun for seeds 101, 202, 303"
+      ]
+    },
+    "files_needed": [
+      "metrics_final.csv",
+      "scaling_stats.csv",
+      "timing_summary.json"
+    ],
+    "checked_in_bundle": "evaluation/sds/aggregated_report_batches/paper_public_main_v1"
+  },
+  "bigcode": {
+    "result_roots": [
+      "evaluation/bigcode/results_batches/20251230_struct-feas-v1",
+      "evaluation/bigcode/results_batches/20251230_baselines-v1"
+    ],
+    "methods_included": {
+      "from_20251230_struct-feas-v1": [
+        "Ours (Hero) - 3 seeds",
+        "Ours (+Oracle) - 3 seeds",
+        "Ours (+Diversity) - 3 seeds",
+        "Ours (w/o Structure) - 3 seeds",
+        "Ours (w/o Prompt) - 3 seeds"
+      ],
+      "from_20251230_baselines-v1": [
+        "Base model - 3 seeds"
+      ]
+    },
+    "files_needed": [
+      "metrics_humaneval.json",
+      "metrics_mbpp.json"
+    ],
+    "checked_in_bundle": "evaluation/bigcode/aggregated_report_batches/paper_public_main_v1"
+  },
+  "additional_analyses": {
+    "universal_solver_search": {
+      "location": "evaluation/sds/universal_search_batches/20251230_struct-feas-v1/",
+      "aggregation_script": "evaluation/sds/aggregate_universal_search.py",
+      "description": "Appendix-only universal-code search. Not folded into the main SDS comparison frame."
+    },
+    "baseline_evidence_bundle": {
+      "location": "evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/",
+      "description": "Compile-once, manual SA, and runtime-accounting bundle used by the final paper."
+    }
+  },
+  "source_report_set": "experiments/report_sets/paper_main_results_v1.json"
+}

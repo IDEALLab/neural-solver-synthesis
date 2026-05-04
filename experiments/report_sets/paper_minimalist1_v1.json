@@ -1,0 +1,16 @@
+{
+    "name": "paper_minimalist1_v1",
+    "description": "Minimalist feasibility reward v1 batch results, combining new minimal-feasibility runs with frozen baselines.",
+    "sds": {
+        "result_roots": [
+            "evaluation/sds/results_batches/20260120_minimal-feas-v1",
+            "evaluation/sds/results_batches/20251230_baselines-v1"
+        ]
+    },
+    "bigcode": {
+        "result_roots": [
+            "evaluation/bigcode/results_batches/20260120_minimal-feas-v1",
+            "evaluation/bigcode/results_batches/20251230_baselines-v1"
+        ]
+    }
+}

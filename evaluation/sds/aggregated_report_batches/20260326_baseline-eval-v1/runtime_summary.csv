@@ -1,0 +1,10 @@
+Method,Seed,RunType,GenerationWallClock,EvaluationWallClock,Dataset,Path,TimingStatus,TotalWallClock
+Ours (Hero),101.0,llm-generate-and-eval,280.9797282218933,2450.0162496566772,SoheylM/OpenR1-SDS-10k-seed101,evaluation/sds/results_batches/20260326_baseline-eval-v1/qwen2.5-coder-14b/grpo/seed101/job-1315163/timing_summary.json,available,2730.9959778785706
+Frozen Hero,101.0,fixed-code,0.0,2341.872145175934,SoheylM/OpenR1-SDS-10k-seed101,evaluation/sds/results_batches/20260326_baseline-eval-v1/fixed-code/frozen-hero/seed101/timing_summary.json,available,2341.872145175934
+Hand-written SA,101.0,fixed-code,0.0,3102.703227996826,SoheylM/OpenR1-SDS-10k-seed101,evaluation/sds/results_batches/20260326_baseline-eval-v1/fixed-code/hand-written-sa/seed101/timing_summary.json,available,3102.703227996826
+Base (Best-of-64),101.0,best-of-n,15685.970293045044,9793.547758340836,SoheylM/OpenR1-SDS-10k-seed101,evaluation/sds/results_batches/20260326_baseline-eval-v1/qwen2.5-coder-14b/base/seed101/timing_summary.json,available,25479.51805138588
+ShinkaEvolve,101.0,shinka-eval,0.0,2108.9998528957367,SoheylM/ShinkaEvolve-SDS-1000-v2-seed101,evaluation/sds/results/shinka-evolve/ShinkaEvolve-SDS-1000-v2-seed101/seed101/test/timing_summary.json,available,2108.9998528957367
+CP-SAT,,,0.0,1260.2069218640002,,derived-from-metrics_final.csv,derived,1260.2069218640002
+Local Search,,,0.0,163.6050521275028,,derived-from-metrics_final.csv,derived,163.6050521275028
+Greedy,,,0.0,0.6582934698089464,,derived-from-metrics_final.csv,derived,0.6582934698089464
+BnB,,,0.0,3368.153339514043,,derived-from-metrics_final.csv,derived,3368.153339514043

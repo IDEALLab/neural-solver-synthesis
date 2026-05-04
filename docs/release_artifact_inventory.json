@@ -1,0 +1,78 @@
+{
+  "release": {
+    "name": "paper_public_release",
+    "branch": "release snapshot",
+    "main_manifest": "experiments/report_sets/paper_public_main_v1.json",
+    "appendix_manifest": "experiments/report_sets/paper_public_appendix_v1.json"
+  },
+  "submodules": {
+    "open_r1": {
+      "path": "deps/open-r1",
+      "commit": "0fd3d1b0be4cb009fb8a1279ca6f2e52c4019d2f",
+      "status": "pinned_in_release_branch"
+    },
+    "shinka_evolve": {
+      "path": "deps/ShinkaEvolve",
+      "commit": "202269eb9adcb788e047470721c2cf91216fec89",
+      "status": "pinned_in_release_branch"
+    }
+  },
+  "paper_bundles": {
+    "sds_main": {
+      "manifest": "experiments/report_sets/paper_public_main_v1.json",
+      "checked_in_bundle": "evaluation/sds/aggregated_report_batches/paper_public_main_v1",
+      "source_report_set": "experiments/report_sets/paper_main_results_v1.json"
+    },
+    "bigcode_main": {
+      "manifest": "experiments/report_sets/paper_public_main_v1.json",
+      "checked_in_bundle": "evaluation/bigcode/aggregated_report_batches/paper_public_main_v1"
+    },
+    "baseline_evidence": {
+      "bundle": "evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1",
+      "artifacts": [
+        "baseline_summary.json",
+        "runtime_summary.json"
+      ]
+    }
+  },
+  "appendix_evidence": {
+    "soft_gate": {
+      "report_set": "experiments/report_sets/paper_soft_gate_v1.json",
+      "report": "docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md",
+      "status": "checked_in_report_with_external_result_roots"
+    },
+    "reward_normalization": {
+      "report": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md",
+      "summary": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json",
+      "status": "checked_in"
+    },
+    "feasibility_sparsity": {
+      "report": "docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md",
+      "summary_dir": "analysis/feasibility_sparsity",
+      "status": "checked_in"
+    },
+    "timeouts": {
+      "report": "docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md",
+      "status": "checked_in"
+    }
+  },
+  "additional_domains": {
+    "jssp": {
+      "status": "tracked_as_external_artifact",
+      "dataset_repo_ids": [
+        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed101",
+        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed202",
+        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed303"
+      ],
+      "summary_metrics": {
+        "pass_rate_mean": "99.3% ± 1.2%",
+        "gap_mean": "6.12% ± 3.80%"
+      },
+      "notes": "JSSP artifacts are tracked through the companion public collection and evaluation bundle."
+    }
+  },
+  "publication_cleanup": {
+    "huggingface": "published with this release",
+    "wandb": "published with this release"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "mean_convergence": 99.79529170931421,
+  "std_convergence": 0.2895012410180333,
+  "per_seed": [
+    {
+      "seed": 101,
+      "convergence_rate": 100.0,
+      "hero_matches": 978,
+      "feasible": 978,
+      "total": 978
+    },
+    {
+      "seed": 202,
+      "convergence_rate": 100.0,
+      "hero_matches": 980,
+      "feasible": 980,
+      "total": 980
+    },
+    {
+      "seed": 303,
+      "convergence_rate": 99.38587512794268,
+      "hero_matches": 971,
+      "feasible": 977,
+      "total": 977
+    }
+  ]
+}

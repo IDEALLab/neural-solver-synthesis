@@ -1,0 +1,18 @@
+\begin{table}[h]
+\centering
+\caption{\textbf{Base Model Algorithm Distribution.} Analysis of $N=2949$ feasible codes. The model frequently attempts Simulated Annealing but fails to achieve low optimality gaps due to semantic logic errors.}
+\label{tab:base_model_algos}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Algorithm Class} & \textbf{Frequency} & \textbf{Mean Gap} \\
+\midrule
+Simulated Annealing & 776 (26.3\%) & 25.63\% \\
+Greedy & 535 (18.1\%) & 30.06\% \\
+Backtracking & 771 (26.1\%) & 31.29\% \\
+Random Search & 350 (11.9\%) & 30.06\% \\
+Other & 180 (6.1\%) & 30.53\% \\
+\midrule
+\textit{(SA w/ Valid Structure)} & \textit{755} & \textit{25.53\%} \\
+\bottomrule
+\end{tabular}
+\end{table}

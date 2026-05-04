@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder-14b",
+  "seed": 303,
+  "job_id": "1315171",
+  "config_name": "config_ablation_diversity",
+  "method_name": "Ours (+Diversity)",
+  "embedded_model_path": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_ablation_diversity/job-1315171/checkpoint-90"
+}

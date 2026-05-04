@@ -1,0 +1,41 @@
+{
+  "name": "paper_public_appendix_v1",
+  "description": "Canonical appendix/supporting-evidence manifest for the public paper release.",
+  "notes": "This manifest intentionally keeps the appendix analyses separate from the main SDS paper comparison frame.",
+  "appendix_evidence": {
+    "fixed_code_and_runtime_bundle": {
+      "path": "evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/",
+      "artifacts": [
+        "baseline_summary.json",
+        "baseline_summary.csv",
+        "runtime_summary.json",
+        "runtime_summary.csv"
+      ]
+    },
+    "soft_gate": {
+      "report_set": "experiments/report_sets/paper_soft_gate_v1.json",
+      "report": "docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md"
+    },
+    "reward_normalization": {
+      "report": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md",
+      "summary": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json"
+    },
+    "feasibility_sparsity": {
+      "report": "docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md",
+      "summary_dir": "analysis/feasibility_sparsity/",
+      "summary_files": [
+        "summary.json",
+        "per_seed_summary.csv",
+        "progress_bins.csv",
+        "stage_pooled_summary.csv"
+      ]
+    },
+    "timeouts": {
+      "report": "docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md"
+    },
+    "additional_domain_jssp": {
+      "inventory_entry": "docs/release_artifact_inventory.json#additional_domains.jssp",
+      "status": "tracked_as_external_artifact"
+    }
+  }
+}

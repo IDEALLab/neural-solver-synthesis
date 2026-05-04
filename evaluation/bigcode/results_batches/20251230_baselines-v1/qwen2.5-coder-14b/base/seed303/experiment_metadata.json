@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder-14b",
+  "seed": 303,
+  "job_id": null,
+  "config_name": "base",
+  "method_name": "Base",
+  "embedded_model_path": "Qwen/Qwen2.5-Coder-14B-Instruct"
+}

@@ -1,0 +1,243 @@
+{
+  "name": "paper_main_results_v1",
+  "description": "Main results for the paper. Complete manifest of all evaluation results needed for tables and figures.",
+  "notes": "Explicit report-set manifest for reproducible aggregation. This is the single source of truth for the paper results.",
+  "sds": {
+    "result_roots": [
+      "evaluation/sds/results_batches/20251230_struct-feas-v1",
+      "evaluation/sds/results_batches/20251230_baselines-v1"
+    ],
+    "methods_included": {
+      "from_20251230_struct-feas-v1": [
+        "Ours (Hero) - 3 seeds",
+        "Ours (+Oracle) - 3 seeds",
+        "Ours (+Diversity) - 3 seeds",
+        "Ours (w/o Structure) - 3 seeds",
+        "Ours (w/o Prompt) - 3 seeds",
+        "Baselines (extracted from Hero runs): CP-SAT, Local Search, Greedy, BnB"
+      ],
+      "from_20251230_baselines-v1": [
+        "Base (Best-of-64) - 3 seeds",
+        "ShinkaEvolve - 3 seeds"
+      ]
+    },
+    "files_needed": [
+      "metrics_final.csv (for all methods)",
+      "scaling_stats.csv (for Base model, used in Figure 5)"
+    ]
+  },
+  "bigcode": {
+    "result_roots": [
+      "evaluation/bigcode/results_batches/20251230_struct-feas-v1",
+      "evaluation/bigcode/results_batches/20251230_baselines-v1"
+    ],
+    "methods_included": {
+      "from_20251230_struct-feas-v1": [
+        "Ours (Hero) - 3 seeds",
+        "Ours (+Oracle) - 3 seeds",
+        "Ours (+Diversity) - 3 seeds",
+        "Ours (w/o Structure) - 3 seeds",
+        "Ours (w/o Prompt) - 3 seeds"
+      ],
+      "from_20251230_baselines-v1": [
+        "Base Model - 3 seeds"
+      ]
+    },
+    "files_needed": [
+      "metrics_humaneval.json",
+      "metrics_mbpp.json"
+    ]
+  },
+  "additional_analyses": {
+    "universal_solver_search": {
+      "location": "evaluation/sds/universal_search_batches/20251230_struct-feas-v1/",
+      "description": "Separate analysis searching for universal code from Base model's 64k generations. Not aggregated into main results, but results are reported in manuscript Appendix.",
+      "aggregation_script": "evaluation/sds/aggregate_universal_search.py"
+    }
+  },
+  "evaluation_artifacts": {
+    "description": "Large evaluation result files (gitignored) backed up to HuggingFace Hub as private datasets.",
+    "push_script": "evaluation/sds/push_evaluation_results_to_hf.py",
+    "huggingface_orgs": ["SoheylM"],
+    "base_model_generations": {
+      "hf_prefix": "OpenR1-SDS-Base-Generations",
+      "local_dir": "evaluation/sds/results_batches/20251230_baselines-v1/qwen2.5-coder-14b/base",
+      "description": "64 samples x 1000 problems per seed (~1 GB each). Used for Pass@k scaling (Figure 5), Best-of-64 baseline, and Universal Solver Search.",
+      "seeds": {
+        "101": {"file": "seed101/generations.jsonl", "lines": 64000},
+        "202": {"file": "seed202/generations.jsonl", "lines": 64000},
+        "303": {"file": "seed303/generations.jsonl", "lines": 64000}
+      }
+    },
+    "universal_solver_search": {
+      "hf_prefix": "OpenR1-SDS-Universal-Search",
+      "local_dir": "evaluation/sds/universal_search_batches/20251230_struct-feas-v1",
+      "description": "Deduplicated candidates and tournament evaluation artifacts (~430 MB per seed). Consolidated into the same batch as the paper-referenced summaries.",
+      "seeds": {
+        "101": {"files": ["candidates_dedup.json", "tournament_evals.csv", "tournament_summary.csv", "final_evals.csv"]},
+        "202": {"files": ["candidates_dedup.json", "tournament_evals.csv", "tournament_summary.csv", "final_evals.csv"]},
+        "303": {"files": ["candidates_dedup.json", "tournament_evals.csv", "tournament_summary.csv"], "notes": "final_evals.csv absent for this seed"}
+      }
+    }
+  },
+  "checkpoints": {
+    "base_path": "CLUSTER_ROOT/checkpoints",
+    "base_model": "Qwen/Qwen2.5-Coder-14B-Instruct",
+    "push_script": "scripts/push_checkpoints_to_hf.slurm",
+    "huggingface_orgs": ["SoheylM", "IDEALLab"],
+    "huggingface_collection": "Neural Solver Synthesis",
+    "notes": "Minimalist (w/o Structure) checkpoints reside inside config_hero directories (job IDs 1401xxx) because config_minimalist.yaml was created after training. The weights were trained with minimal_feasibility_reward via a temporary edit to config_hero.yaml.",
+    "models": {
+      "Hero": {
+        "config": "config_hero",
+        "hf_prefix": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Hero",
+        "seeds": {
+          "101": {"job_id": "1315163", "checkpoint": "checkpoint-60", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_hero/job-1315163/checkpoint-60"},
+          "202": {"job_id": "1315168", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_hero/job-1315168/checkpoint-90"},
+          "303": {"job_id": "1315173", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_hero/job-1315173/checkpoint-90"}
+        }
+      },
+      "Ablation-Oracle": {
+        "config": "config_ablation_oracle",
+        "hf_prefix": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-Oracle",
+        "seeds": {
+          "101": {"job_id": "1315160", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_ablation_oracle/job-1315160/checkpoint-90"},
+          "202": {"job_id": "1315165", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_ablation_oracle/job-1315165/checkpoint-90"},
+          "303": {"job_id": "1315170", "checkpoint": "checkpoint-60", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_ablation_oracle/job-1315170/checkpoint-60"}
+        }
+      },
+      "Ablation-Diversity": {
+        "config": "config_ablation_diversity",
+        "hf_prefix": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-Diversity",
+        "seeds": {
+          "101": {"job_id": "1315161", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_ablation_diversity/job-1315161/checkpoint-90"},
+          "202": {"job_id": "1315166", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_ablation_diversity/job-1315166/checkpoint-90"},
+          "303": {"job_id": "1315171", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_ablation_diversity/job-1315171/checkpoint-90"}
+        }
+      },
+      "Ablation-Prompt": {
+        "config": "config_ablation_prompt",
+        "hf_prefix": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-Prompt",
+        "seeds": {
+          "101": {"job_id": "1315162", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_ablation_prompt/job-1315162/checkpoint-90"},
+          "202": {"job_id": "1315167", "checkpoint": "checkpoint-60", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_ablation_prompt/job-1315167/checkpoint-60"},
+          "303": {"job_id": "1315172", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_ablation_prompt/job-1315172/checkpoint-90"}
+        }
+      },
+      "Minimalist": {
+        "config": "config_minimalist",
+        "hf_prefix": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Minimalist",
+        "notes": "Checkpoints reside inside config_hero directories (trained with temporary config edit)",
+        "seeds": {
+          "101": {"job_id": "1401179", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_hero/job-1401179/checkpoint-90"},
+          "202": {"job_id": "1401183", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_hero/job-1401183/checkpoint-90"},
+          "303": {"job_id": "1401187", "checkpoint": "checkpoint-90", "cluster_dir": "Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_hero/job-1401187/checkpoint-90"}
+        }
+      }
+    }
+  },
+  "wandb": {
+    "entity": "smassoudi-eth-z-rich",
+    "tag": "neural-solver-synthesis",
+    "tagging_script": "experiments/tag_wandb_runs.py",
+    "projects": {
+      "qwen-coder-sds-rl": {
+        "description": "Training + SDS evaluation runs",
+        "training_runs": {
+          "Hero": {
+            "seed101": {"run_id": "onk8fldf", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed101-job1315163"},
+            "seed202": {"run_id": "0c9zvpvd", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed202-job1315168"},
+            "seed303": {"run_id": "ssc0gjsy", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed303-job1315173"}
+          },
+          "Ablation-Oracle": {
+            "seed101": {"run_id": "t1mr9gtv", "run_name": "qwen2.5-coder-14b-grpo-oracle-sds-seed101-job1315160"},
+            "seed202": {"run_id": "yk47ah0r", "run_name": "qwen2.5-coder-14b-grpo-oracle-sds-seed202-job1315165"},
+            "seed303": {"run_id": "kshphlgr", "run_name": "qwen2.5-coder-14b-grpo-oracle-sds-seed303-job1315170"}
+          },
+          "Ablation-Diversity": {
+            "seed101": {"run_id": "70itm5z8", "run_name": "qwen2.5-coder-14b-grpo-div-sds-seed101-job1315161"},
+            "seed202": {"run_id": "ekkq8134", "run_name": "qwen2.5-coder-14b-grpo-div-sds-seed202-job1315166"},
+            "seed303": {"run_id": "g74c6fcn", "run_name": "qwen2.5-coder-14b-grpo-div-sds-seed303-job1315171"}
+          },
+          "Ablation-Prompt": {
+            "seed101": {"run_id": "oa97s4af", "run_name": "qwen2.5-coder-14b-grpo-prompt-sds-seed101-job1315162"},
+            "seed202": {"run_id": "0t1vntns", "run_name": "qwen2.5-coder-14b-grpo-prompt-sds-seed202-job1315167"},
+            "seed303": {"run_id": "oo2cxnl9", "run_name": "qwen2.5-coder-14b-grpo-prompt-sds-seed303-job1315172"}
+          },
+          "Minimalist": {
+            "seed101": {"run_id": "3b7y7tz0", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed101-job1401179"},
+            "seed202": {"run_id": "cz6nxfvq", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed202-job1401183"},
+            "seed303": {"run_id": "nge77q35", "run_name": "qwen2.5-coder-14b-grpo-hero-sds-seed303-job1401187"}
+          }
+        },
+        "sds_eval_runs": {
+          "Hero": {
+            "seed101": {"run_id": "uat4rwn1", "run_name": "qwen2.5-coder-14b-grpo-sds-seed101-job1315163"},
+            "seed202": {"run_id": "j0dlb7vd", "run_name": "qwen2.5-coder-14b-grpo-sds-seed202-job1315168"},
+            "seed303": {"run_id": "hk7vocr9", "run_name": "qwen2.5-coder-14b-grpo-sds-seed303-job1315173"}
+          },
+          "Ablation-Oracle": {
+            "seed101": {"run_id": "65hyan8x", "run_name": "qwen2.5-coder-14b-grpo-sds-seed101-job1315160"},
+            "seed202": {"run_id": "yyj6ljxv", "run_name": "qwen2.5-coder-14b-grpo-sds-seed202-job1315165"},
+            "seed303": {"run_id": "6puakll1", "run_name": "qwen2.5-coder-14b-grpo-sds-seed303-job1315170"}
+          },
+          "Ablation-Diversity": {
+            "seed101": {"run_id": "qdfeg5t3", "run_name": "qwen2.5-coder-14b-grpo-sds-seed101-job1315161"},
+            "seed202": {"run_id": "c3tivhsc", "run_name": "qwen2.5-coder-14b-grpo-sds-seed202-job1315166"},
+            "seed303": {"run_id": "hqd1e0bh", "run_name": "qwen2.5-coder-14b-grpo-sds-seed303-job1315171"}
+          },
+          "Ablation-Prompt": {
+            "seed101": {"run_id": "vjvu8hrl", "run_name": "qwen2.5-coder-14b-grpo-sds-seed101-job1315162"},
+            "seed202": {"run_id": "jd7zfrgn", "run_name": "qwen2.5-coder-14b-grpo-sds-seed202-job1315167"},
+            "seed303": {"run_id": "83n5lfc2", "run_name": "qwen2.5-coder-14b-grpo-sds-seed303-job1315172"}
+          },
+          "Minimalist": {
+            "seed101": {"run_id": "53pthb7c", "run_name": "qwen2.5-coder-14b-grpo-sds-seed101-job1401179"},
+            "seed202": {"run_id": "rz3dkevn", "run_name": "qwen2.5-coder-14b-grpo-sds-seed202-job1401183"},
+            "seed303": {"run_id": "e2eeu8do", "run_name": "qwen2.5-coder-14b-grpo-sds-seed303-job1401187"}
+          },
+          "Base": {
+            "seed101": {"run_id": "47iaslp6", "run_name": "qwen2.5-coder-14b-base-sds-seed101"},
+            "seed202": {"run_id": "c9e0caxj", "run_name": "qwen2.5-coder-14b-base-sds-seed202"},
+            "seed303": {"run_id": "jqvwzcqu", "run_name": "qwen2.5-coder-14b-base-sds-seed303"}
+          }
+        }
+      },
+      "qwen-coder-bigcode-rl": {
+        "description": "BigCode evaluation runs (HumanEval + MBPP)",
+        "bigcode_eval_runs": {
+          "Hero": {
+            "seed101": {"run_id": "zfabcsp6", "run_name": "qwen2.5-coder-14b-grpo-hero-bigcode-seed101-job1315163-eval"},
+            "seed202": {"run_id": "oi3xa558", "run_name": "qwen2.5-coder-14b-grpo-hero-bigcode-seed202-job1315168-eval"},
+            "seed303": {"run_id": "1j3wsdq9", "run_name": "qwen2.5-coder-14b-grpo-hero-bigcode-seed303-job1315173-eval"}
+          },
+          "Minimalist": {
+            "seed101": {"run_id": "dat6at1c", "run_name": "-workspace-checkpoints-...-config-hero-job-1401179-...-eval"},
+            "seed202": {"run_id": "ab8tl5fi", "run_name": "-workspace-checkpoints-...-config-hero-job-1401183-...-eval"},
+            "seed303": {"run_id": "jf0wi43o", "run_name": "-workspace-checkpoints-...-config-hero-job-1401187-...-eval"}
+          },
+          "Ablation-Oracle": {
+            "seed101": {"run_id": "ogr7yyqs", "run_name": "-workspace-checkpoints-...-config-ablation-oracle-job-1401176-...-eval"},
+            "seed202": {"run_id": "ut7g31cc", "run_name": "-workspace-checkpoints-...-config-ablation-oracle-job-1401180-...-eval"},
+            "seed303": {"run_id": "x6uxx0zd", "run_name": "-workspace-checkpoints-...-config-ablation-oracle-job-1401184-...-eval"}
+          },
+          "Ablation-Diversity": {
+            "seed101": {"run_id": "z8899iny", "run_name": "-workspace-checkpoints-...-config-ablation-diversity-job-1401177-...-eval"},
+            "seed202": {"run_id": "0k3d4k11", "run_name": "-workspace-checkpoints-...-config-ablation-diversity-job-1401181-...-eval"},
+            "seed303": {"run_id": "qjzj4si3", "run_name": "-workspace-checkpoints-...-config-ablation-diversity-job-1401185-...-eval"}
+          },
+          "Ablation-Prompt": {
+            "seed101": {"run_id": "wk7midtp", "run_name": "-workspace-checkpoints-...-config-ablation-prompt-job-1401178-...-eval"},
+            "seed202": {"run_id": "x8oojuq9", "run_name": "-workspace-checkpoints-...-config-ablation-prompt-job-1401182-...-eval"},
+            "seed303": {"run_id": "k1xg20mg", "run_name": "-workspace-checkpoints-...-config-ablation-prompt-job-1401186-...-eval"}
+          },
+          "Base": {
+            "seed101": {"run_id": "w3ra8gqw", "run_name": "qwen-qwen25-coder-14b-instruct-grpo-bigcode-seed101-eval"},
+            "seed202": {"run_id": "7bjvnhm8", "run_name": "qwen-qwen25-coder-14b-instruct-grpo-bigcode-seed202-eval"},
+            "seed303": {"run_id": "fyftf2vf", "run_name": "qwen-qwen25-coder-14b-instruct-grpo-bigcode-seed303-eval"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+name: llm-finetuning
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.8
+  - pip
+  # Note: Java build tools (maven, gradle) are not needed for local development
+  # Java projects are built using Docker (see README.md)
+

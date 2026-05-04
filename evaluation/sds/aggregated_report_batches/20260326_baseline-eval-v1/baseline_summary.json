@@ -1,0 +1,83 @@
+[
+  {
+    "Method":"Ours (Hero)",
+    "PassMean":0.9783333333,
+    "PassStd":0.0015275252,
+    "GapMean":0.0481716326,
+    "GapStd":0.0101878236,
+    "CostMean":0.1876172098,
+    "CostStd":0.1289316307
+  },
+  {
+    "Method":"Frozen Hero",
+    "PassMean":0.9786666667,
+    "PassStd":0.0015275252,
+    "GapMean":0.0434011538,
+    "GapStd":0.0026359085,
+    "CostMean":0.1779709134,
+    "CostStd":0.128572361
+  },
+  {
+    "Method":"Hand-written SA",
+    "PassMean":0.9563333333,
+    "PassStd":0.0015275252,
+    "GapMean":0.0531824143,
+    "GapStd":0.0046008659,
+    "CostMean":0.8385876447,
+    "CostStd":0.0246534154
+  },
+  {
+    "Method":"Base (Best-of-64)",
+    "PassMean":0.856,
+    "PassStd":0.013453624,
+    "GapMean":0.2853729685,
+    "GapStd":0.0218966273,
+    "CostMean":17.1415200297,
+    "CostStd":0.7787730414
+  },
+  {
+    "Method":"ShinkaEvolve",
+    "PassMean":0.9156666667,
+    "PassStd":0.0124230968,
+    "GapMean":0.1443366757,
+    "GapStd":0.020012008,
+    "CostMean":0.1264884906,
+    "CostStd":0.0288837755
+  },
+  {
+    "Method":"CP-SAT",
+    "PassMean":0.983,
+    "PassStd":0.0026457513,
+    "GapMean":0.0078699719,
+    "GapStd":0.0031114089,
+    "CostMean":1.2005958954,
+    "CostStd":0.0519132548
+  },
+  {
+    "Method":"Local Search",
+    "PassMean":0.983,
+    "PassStd":0.0026457513,
+    "GapMean":0.098152712,
+    "GapStd":0.0047603582,
+    "CostMean":0.1629412104,
+    "CostStd":0.0056844022
+  },
+  {
+    "Method":"Greedy",
+    "PassMean":0.9826666667,
+    "PassStd":0.0025166115,
+    "GapMean":0.2258607108,
+    "GapStd":0.0116837566,
+    "CostMean":0.0006477173,
+    "CostStd":0.0000381858
+  },
+  {
+    "Method":"BnB",
+    "PassMean":0.9733333333,
+    "PassStd":0.0035118846,
+    "GapMean":0.1887537407,
+    "GapStd":0.0141057751,
+    "CostMean":3.3301418629,
+    "CostStd":0.0430127087
+  }
+]

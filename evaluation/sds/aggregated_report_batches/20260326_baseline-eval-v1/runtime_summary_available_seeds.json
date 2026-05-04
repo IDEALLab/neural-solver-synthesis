@@ -1,0 +1,52 @@
+[
+  {
+    "Method":"Ours (Hero)",
+    "SeedsReported":1,
+    "GenerationWallClockMean":280.9797282219,
+    "GenerationWallClockStd":null,
+    "EvaluationWallClockMean":2450.0162496567,
+    "EvaluationWallClockStd":null,
+    "TotalWallClockMean":2730.9959778786,
+    "TotalWallClockStd":null
+  },
+  {
+    "Method":"Frozen Hero",
+    "SeedsReported":3,
+    "GenerationWallClockMean":0.0,
+    "GenerationWallClockStd":0.0,
+    "EvaluationWallClockMean":2093.6725782553,
+    "EvaluationWallClockStd":222.4524529207,
+    "TotalWallClockMean":2093.6725782553,
+    "TotalWallClockStd":222.4524529207
+  },
+  {
+    "Method":"Hand-written SA",
+    "SeedsReported":3,
+    "GenerationWallClockMean":0.0,
+    "GenerationWallClockStd":0.0,
+    "EvaluationWallClockMean":3107.410279274,
+    "EvaluationWallClockStd":21.571784181,
+    "TotalWallClockMean":3107.410279274,
+    "TotalWallClockStd":21.571784181
+  },
+  {
+    "Method":"Base (Best-of-64)",
+    "SeedsReported":1,
+    "GenerationWallClockMean":15685.970293045,
+    "GenerationWallClockStd":null,
+    "EvaluationWallClockMean":9793.5477583408,
+    "EvaluationWallClockStd":null,
+    "TotalWallClockMean":25479.5180513859,
+    "TotalWallClockStd":null
+  },
+  {
+    "Method":"ShinkaEvolve",
+    "SeedsReported":3,
+    "GenerationWallClockMean":0.0,
+    "GenerationWallClockStd":0.0,
+    "EvaluationWallClockMean":2048.0100420316,
+    "EvaluationWallClockStd":58.5680207517,
+    "TotalWallClockMean":2048.0100420316,
+    "TotalWallClockStd":58.5680207517
+  }
+]

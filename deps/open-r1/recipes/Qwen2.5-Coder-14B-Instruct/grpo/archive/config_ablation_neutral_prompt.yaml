@@ -1,0 +1,116 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-14B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+# Data training arguments
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-SDS-10k-seed101
+dataset_prompt_column: problem
+system_prompt: |
+  You are a coding assistant. Write a Python script to solve the Synergistic Dependency Selection (SDS) optimization problem.
+
+  FORMATTING RULES:
+  1. Begin with a <think> block.
+  2. End with a single <code> block containing the JSON-processing Python script.
+  3. No other text is allowed outside these blocks.
+
+  IO CONTRACT:
+  - Read JSON from stdin with keys {"requirements": {...}, "catalog": {...}}.
+  - Print JSON to stdout with key {"selection": {"variables": [...]}}.
+  - Use the python `json` library.
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# --- GRPO core ---
+beta: 0.0
+num_iterations: 1
+epsilon: 0.10
+epsilon_high: 0.26
+loss_type: bnpo
+
+# Precision and Performance
+bf16: true
+tf32: true
+use_liger_kernel: true
+torch_compile: false
+
+# --- vLLM Integrated Configuration ---
+use_vllm: true
+vllm_mode: "server"
+
+
+# Evaluation and Logging
+do_eval: false
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 4    # (4 GPUs * 2 Batch * 4 Accum = 32 Global Batch)
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Learning Rate and Scheduling
+learning_rate: 2e-6
+warmup_ratio: 0.0
+lr_scheduler_type: cosine
+
+# Sequence Length
+max_prompt_length: 2048
+max_completion_length: 4096       # Long context
+temperature: 1.0
+
+# Training Duration
+max_steps: -1
+num_train_epochs: 1
+num_generations: 32                # Generate 16 completions
+
+# Batch Sizes
+per_device_train_batch_size: 4    # Keep at 2 for 14B
+per_device_eval_batch_size: 1
+
+# Model Saving
+output_dir: data/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-NeutralPrompt
+overwrite_output_dir: true
+save_strategy: "steps"
+save_steps: 30
+save_total_limit: 4
+
+# Hub
+push_to_hub: false
+hub_model_id: Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-NeutralPrompt
+hub_strategy: checkpoint
+hub_private_repo: true
+
+# Tracking
+report_to:
+- wandb
+
+# =============================================================================
+# REWARD FUNCTIONS (ABLATION: Neutral Prompt)
+# =============================================================================
+# This config uses a neutral system prompt (no "Rugged Landscape" warnings)
+# to test if the prompt bias is necessary to break pre-training bias.
+reward_funcs:
+- unified_format_reward
+- unified_code_execution_reward
+- unified_nominal_reward
+- reward_code_diversity_fast
+
+reward_weights:
+- 0.10
+- 0.20
+- 0.60
+- 0.10
+
+# Reproducibility
+seed: 42
+

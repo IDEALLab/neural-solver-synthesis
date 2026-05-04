@@ -1,0 +1,120 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-7B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+# Data training arguments
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-SDS-10k-seed101
+dataset_prompt_column: problem
+system_prompt: |
+  You are an expert engineering reasoning engine specialized in combinatorial optimization. Your task is to write a high-performance Python script to solve Synergistic Dependency Selection (SDS) problems.
+
+  FORMATTING RULES:
+  1. Begin with a <think> block.
+  2. End with a single <code> block containing the JSON-processing Python script.
+  3. No other text is allowed outside these blocks.
+
+  THINKING GUIDELINES:
+  Inside the <think> block, you must engage in a rigorous algorithm design process:
+  - **Deconstruct**: Analyze the objective landscape. Acknowledge that simple heuristics (like greedy selection) will likely get stuck in local optima due to negative interaction weights and complex constraints.
+  - **Hypothesize**: Propose a search strategy capable of exploring the solution space effectively. Consider how to balance "exploitation" (improving a good solution) with "exploration" (escaping bad local optima).
+  - **Critique**: Question your approach. "Does my algorithm just pick the next best item? If so, it will fail on deceptive landscapes. How do I add lookahead, backtracking, or iterative improvement?"
+  - **Simulate**: Mentally dry-run the logic to ensure constraints (mutex, precedence) are strictly satisfied during the search.
+  - **Finalize**: Verify I/O requirements.
+
+  GOAL:
+  Your code must aim for **Global Optimality**, not just feasibility. You must write a self-contained solver (no external black-box libraries like OR-Tools) that intelligently searches for the best possible score.
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# --- GRPO core ---
+beta: 0.0
+num_iterations: 1
+epsilon: 0.10
+epsilon_high: 0.26
+loss_type: bnpo
+
+# Precision and Performance
+bf16: true
+tf32: true
+use_liger_kernel: true
+torch_compile: false
+
+# --- vLLM Integrated Configuration ---
+use_vllm: true
+vllm_mode: "server"
+
+
+# Evaluation and Logging
+do_eval: false
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 16    # (4 GPUs * 4 Batch * 8 Accum = 128 Global Batch)
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Learning Rate and Scheduling
+learning_rate: 2e-6
+warmup_ratio: 0.0
+lr_scheduler_type: cosine
+
+# Sequence Length
+max_prompt_length: 2048
+max_completion_length: 4096       # Long context
+temperature: 1.0
+
+# Training Duration
+max_steps: -1
+num_train_epochs: 1
+num_generations: 12                # Generate 12 completions for diversity calculation
+
+# Batch Sizes
+per_device_train_batch_size: 4    # Upgraded to 4 for 7B
+per_device_eval_batch_size: 1
+
+# Model Saving
+output_dir: data/Qwen2.5-Coder-7B-Instruct-GRPO-SDS-Discovery
+overwrite_output_dir: true
+save_strategy: "steps"
+save_steps: 40
+save_total_limit: 2
+
+# Hub
+push_to_hub: false
+hub_model_id: Qwen2.5-Coder-7B-Instruct-GRPO-SDS-Discovery
+hub_strategy: checkpoint
+hub_private_repo: true
+
+# Tracking
+report_to:
+- wandb
+
+# =============================================================================
+# REWARD FUNCTIONS
+# =============================================================================
+reward_funcs:
+- unified_format_reward           # Keep strictly enforced
+- unified_code_execution_reward   # Now punishes Greedy matching
+- unified_generalization_reward   # Ensures robustness
+- reward_code_diversity_fast      # Forces exploration
+
+reward_weights:
+- 0.10  # Format: Basic gatekeeper
+- 0.60  # Execution: The main driver. Beating greedy is the only way to get a high score here. (Increased from 0.50, absorbed structure weight)
+- 0.20  # Generalization: Ensures the code works on new inputs, not just the training prompt.
+- 0.10  # Diversity: Small nudge to keep the batch diverse.
+
+# Reproducibility
+seed: 42
+

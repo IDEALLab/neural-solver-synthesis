@@ -1,0 +1,17 @@
+\begin{tabular}{lcccccc}
+\toprule
+Method & None (Valid) (\%) $\uparrow$ & Timeout (\%) $\downarrow$ & Constraint Violation (\%) $\downarrow$ & Syntax Error (\%) $\downarrow$ & Runtime Error (\%) $\downarrow$ & JSON Parse Error (\%) $\downarrow$ \\
+\midrule
+Ours (Hero) & $97.8_{\pm 0.2}$ & $2.2_{\pm 0.2}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Base (Best-of-64) & $85.6_{\pm 1.3}$ & $\\mathbf{0.0}$ & $14.4_{\pm 1.3}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Ours (+Oracle) & $65.3_{\pm 11.5}$ & $2.9_{\pm 0.6}$ & $31.7_{\pm 11.8}$ & $\\mathbf{0.0}$ & $3.2$ & $\\mathbf{0.0}$ \\
+Ours (+Diversity) & $61.3_{\pm 9.8}$ & $2.6_{\pm 0.5}$ & $36.1_{\pm 9.5}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Ours (w/o Structure) & $74.8_{\pm 19.2}$ & $2.2_{\pm 0.9}$ & $34.5_{\pm 4.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Ours (w/o Prompt) & $64.4_{\pm 7.8}$ & $0.4_{\pm 0.4}$ & $25.4_{\pm 19.4}$ & $\\mathbf{0.0}$ & $29.8$ & $\\mathbf{0.0}$ \\
+ShinkaEvolve & $91.6_{\pm 1.9}$ & $0.4$ & $5.7_{\pm 0.5}$ & $0.2$ & $0.5_{\pm 0.5}$ & $3.0_{\pm 1.4}$ \\
+CP-SAT & $\\mathbf{98.3_{\pm 0.3}}$ & $\\mathbf{0.0}$ & $1.7_{\pm 0.3}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Local Search & $\\mathbf{98.3_{\pm 0.3}}$ & $\\mathbf{0.0}$ & $1.7_{\pm 0.3}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+Greedy & $98.3_{\pm 0.3}$ & $\\mathbf{0.0}$ & $1.7_{\pm 0.3}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+BnB & $97.3_{\pm 0.4}$ & $\\mathbf{0.0}$ & $2.7_{\pm 0.4}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ & $\\mathbf{0.0}$ \\
+\bottomrule
+\end{tabular}

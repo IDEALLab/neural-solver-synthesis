@@ -1,0 +1,91 @@
+# Model arguments
+model_name_or_path: deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+
+# Data training arguments
+# We edit the DeepSeek chat template to ensure (a) the reasoning block within <think> and </think> is included in the completion and (b) the <think> tag is not part of the prefill so that the format reward works
+chat_template: "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{% set ns = namespace(is_first=false, is_tool=false, is_output_first=true, system_prompt='') %}{%- for message in messages %}{%- if message['role'] == 'system' %}{% set ns.system_prompt = message['content'] %}{%- endif %}{%- endfor %}{{bos_token}}{{ns.system_prompt}}{%- for message in messages %}{%- if message['role'] == 'user' %}{%- set ns.is_tool = false -%}{{'<｜User｜>' + message['content']}}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is none %}{%- set ns.is_tool = false -%}{%- for tool in message['tool_calls']%}{%- if not ns.is_first %}{{'<｜Assistant｜><｜tool▁calls▁begin｜><｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{%- set ns.is_first = true -%}{%- else %}{{'\\n' + '<｜tool▁call▁begin｜>' + tool['type'] + '<｜tool▁sep｜>' + tool['function']['name'] + '\\n' + '```json' + '\\n' + tool['function']['arguments'] + '\\n' + '```' + '<｜tool▁call▁end｜>'}}{{'<｜tool▁calls▁end｜><｜end▁of▁sentence｜>'}}{%- endif %}{%- endfor %}{%- endif %}{%- if message['role'] == 'assistant' and message['content'] is not none %}{%- if ns.is_tool %}{{'<｜tool▁outputs▁end｜>' + message['content'] + '<｜end▁of▁sentence｜>'}}{%- set ns.is_tool = false -%}{%- else %}{% set content = message['content'] %}{{'<｜Assistant｜>' + content + '<｜end▁of▁sentence｜>'}}{%- endif %}{%- endif %}{%- if message['role'] == 'tool' %}{%- set ns.is_tool = true -%}{%- if ns.is_output_first %}{{'<｜tool▁outputs▁begin｜><｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- set ns.is_output_first = false %}{%- else %}{{'\\n<｜tool▁output▁begin｜>' + message['content'] + '<｜tool▁output▁end｜>'}}{%- endif %}{%- endif %}{%- endfor -%}{% if ns.is_tool %}{{'<｜tool▁outputs▁end｜>'}}{% endif %}{% if add_generation_prompt and not ns.is_tool %}{{'<｜Assistant｜>'}}{% endif %}"
+dataset_name: SoheylM/OpenR1-EPS-CLIPS-10k
+dataset_prompt_column: problem
+system_prompt: "You are an expert reasoning assistant. Always break your reasoning into clear steps within a <think>...</think> block before responding in the <answer>...</answer> block. Respect any additional tags or formatting that the user requests you to include in your response."
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# Precision and Performance
+bf16: true                                    # Use bfloat16 precision for faster training and lower memory usage
+use_vllm: true                                # Use vLLM for efficient text generation during training
+use_liger_kernel: true                        # Use Liger kernel for optimized attention computation
+
+# Evaluation and Logging
+do_eval: false                                # Disable evaluation during training (we focus on RL training)
+log_completions: true                         # Log model completions for debugging and analysis
+log_level: info                               # Logging verbosity level
+logging_first_step: true                      # Log metrics from the very first training step
+logging_steps: 1                              # Log metrics every step (for detailed monitoring)
+logging_strategy: steps                       # Log based on number of steps (not epochs)
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 16               # Accumulate gradients over 16 steps before updating weights (effective batch size = batch_size * 16)
+gradient_checkpointing: true                  # Enable gradient checkpointing to save memory
+gradient_checkpointing_kwargs:
+  use_reentrant: false                        # Disable reentrant checkpointing for compatibility
+
+# Learning Rate and Scheduling
+learning_rate: 1.0e-06                        # Very small learning rate for fine-tuning (1e-6)
+lr_scheduler_type: cosine_with_min_lr         # Cosine annealing with minimum learning rate
+lr_scheduler_kwargs:
+  min_lr_rate: 0.1                            # Minimum LR = 0.1 * initial_lr (prevents LR from going too low)
+warmup_ratio: 0.1                             # Warm up learning rate for first 10% of training
+
+# Sequence Length and Generation
+max_prompt_length: 1024                       # Maximum length of input prompts (mission requirements)
+max_completion_length: 2048                   # Maximum length of model completions (<think><rule><answer>)
+temperature: 0.7                              # Sampling temperature for text generation (0.7 = balanced creativity/consistency)
+
+# Training Duration and Steps
+max_steps: -1                                 # -1 = train for full num_train_epochs (no step limit)
+num_train_epochs: 100                          # Train for 50 epochs through the dataset
+num_generations: 4                            # Generate 4 completions per prompt for RL training
+
+# Batch Sizes
+per_device_train_batch_size: 4                # Batch size per GPU for training
+per_device_eval_batch_size: 4                 # Batch size per GPU for evaluation (if enabled)
+
+# Model Saving and Checkpointing
+output_dir: data/DeepSeek-R1-Distill-Qwen-1.5B-GRPO  # Local directory for saving checkpoints
+overwrite_output_dir: true                    # Overwrite existing output directory (your preferred setting)
+save_strategy: "steps"                        # Save checkpoints based on number of steps
+save_steps: 10                                # Save checkpoint every 50 steps (less frequent, more stable)
+save_total_limit: 3                           # Keep the last 3 checkpoints (provides fallback options)
+
+# HuggingFace Hub Integration
+push_to_hub: true                             # Automatically push checkpoints to HuggingFace Hub
+hub_model_id: DeepSeek-R1-Distill-Qwen-1.5B-GRPO  # Repository name on HuggingFace Hub
+hub_strategy: checkpoint                      # pushes the current model/tokenizer each save without creating per-step checkpoint folders on the Hub.
+hub_private_repo: true                        # Make the repository private
+
+# Experiment Tracking
+report_to:
+- wandb                                       # Log experiments to Weights & Biases
+
+# =============================================================================
+# REWARD FUNCTIONS FOR CLIPS PATH
+# =============================================================================
+reward_funcs:
+- eps_simulator                               # Main reward: simulator performance - cost
+- eps_clips_format                            # Format reward: checks for <think><rule><answer> blocks
+- eps_clips_compile                           # Compilation reward: validates CLIPS rules compile successfully
+- eps_clips_accuracy                          # Accuracy reward: compares CLIPS rule output vs answer block
+
+reward_weights:
+- 1.0                                         # Weight for eps_simulator reward
+- 1.0                                         # Weight for eps_clips_format reward
+- 1.0                                         # Weight for eps_clips_compile reward
+- 1.0                                         # Weight for eps_clips_accuracy reward
+
+# Reproducibility
+seed: 42                                      # Random seed for reproducible training

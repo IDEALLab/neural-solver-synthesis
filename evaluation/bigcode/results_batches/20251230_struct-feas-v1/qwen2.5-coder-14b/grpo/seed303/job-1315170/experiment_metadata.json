@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder-14b",
+  "seed": 303,
+  "job_id": "1315170",
+  "config_name": "config_ablation_oracle",
+  "method_name": "Ours (+Oracle)",
+  "embedded_model_path": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_ablation_oracle/job-1315170/checkpoint-90"
+}

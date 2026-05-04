@@ -1,0 +1,93 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-14B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true                          # Reduce CPU memory usage during model loading
+
+# Data training arguments
+# Qwen2.5-Coder uses a different chat template optimized for code generation
+# We keep the original Qwen chat template for better code generation capabilities
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\\nYou are a helpful assistant.<|im_end|>\\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\\n' + message['content'] + '<|im_end|>' + '\\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-Unified-Multi-Domain-200k-seed101
+dataset_prompt_column: problem
+system_prompt: "You are an expert coding assistant specializing in engineering design problems. You excel at writing clean, efficient Python code to solve complex optimization problems. Always break your reasoning into clear steps within a <think>...</think> block, write executable Python code in a <code>...</code> block, and provide your final answer in an <answer>...</answer> block. Focus on writing robust, generalizable code that can handle various problem instances."
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# Precision and Performance
+bf16: true                                    # Use bfloat16 precision for faster training and lower memory usage
+use_vllm: true                                # Use vLLM for efficient text generation during training
+use_liger_kernel: true                        # Use Liger kernel for optimized attention computation
+
+# Evaluation and Logging
+do_eval: false                                # Disable evaluation during training (we focus on RL training)
+log_completions: true                         # Log model completions for debugging and analysis
+log_level: info                               # Logging verbosity level
+logging_first_step: true                      # Log metrics from the very first training step
+logging_steps: 1                              # Log metrics every step (for detailed monitoring)
+logging_strategy: steps                       # Log based on number of steps (not epochs)
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 16               # Increased for 14B model (effective batch size = batch_size * 16)
+gradient_checkpointing: true                 # Leave to true otherwise padding error by attempting to use cache with Qwen see https://github.com/huggingface/open-r1/issues/341
+gradient_checkpointing_kwargs:
+  use_reentrant: false                        # Disable reentrant checkpointing for compatibility
+
+# Learning Rate and Scheduling
+learning_rate: 1.5e-06                        # Slightly reduced for 14B model (more stable training)
+lr_scheduler_type: cosine_with_min_lr         # Cosine annealing with minimum learning rate
+lr_scheduler_kwargs:
+  min_lr_rate: 0.1                            # Minimum LR = 0.1 * initial_lr (prevents LR from going too low)
+warmup_ratio: 0.05                            # Reduced warmup from 10% to 5% for faster start
+
+# Sequence Length and Generation
+max_prompt_length: 2048                       # Maximum length of input prompts (mission requirements)
+max_completion_length: 4096                   # Maximum length of model completions (<think><code><answer>)
+temperature: 0.7                              # Sampling temperature for text generation (0.7 = balanced creativity/consistency)
+
+# Training Duration and Steps
+max_steps: -1                                 # -1 = train for full num_train_epochs (no step limit)
+num_train_epochs: 5                          # Train for 5 epochs through the dataset
+num_generations: 4                            # Generate 4 completions per prompt for RL training
+
+# Batch Sizes (Optimized for 14B model on multi-node setup)
+per_device_train_batch_size: 2                # Reduced for 14B model (memory constraints)
+per_device_eval_batch_size: 2                 # Reduced for 14B model (memory constraints)
+
+# Model Saving and Checkpointing
+output_dir: data/Qwen2.5-Coder-14B-Instruct-GRPO-SM  # Local directory for saving checkpoints
+overwrite_output_dir: true                    # Overwrite existing output directory (your preferred setting)
+save_strategy: "steps"                        # Save checkpoints based on number of steps
+save_steps: 2                                # Save checkpoint every 2 steps (less frequent, more stable)
+save_total_limit: 3                           # Keep the last 3 checkpoints (provides fallback options)
+
+# HuggingFace Hub Integration
+push_to_hub: false                             # Automatically push checkpoints to HuggingFace Hub
+hub_model_id: Qwen2.5-Coder-14B-Instruct-GRPO-SM  # Repository name on HuggingFace Hub
+hub_strategy: checkpoint                      # pushes the current model/tokenizer each save without creating per-step checkpoint folders on the Hub.
+hub_private_repo: true                        # Make the repository private
+
+# Experiment Tracking
+report_to:
+- wandb                                       # Log experiments to Weights & Biases
+
+# =============================================================================
+# UNIFIED REWARD FUNCTIONS FOR MULTI-DOMAIN SUPPORT
+# =============================================================================
+reward_funcs:
+- unified_simulator_reward                    # Main reward: domain-aware simulator performance
+- unified_format_reward                       # Format reward: checks for <think><code><answer> blocks
+- unified_code_execution_reward               # Code execution: runs Python code and validates consistency
+- unified_generalization_reward               # Generalization reward: evaluates code on 5 random test instances
+
+reward_weights:
+- 0.25                                         # Weight for unified_simulator_reward
+- 0.25                                         # Weight for unified_format_reward  
+- 0.25                                         # Weight for unified_code_execution_reward
+- 0.25                                         # Weight for unified_generalization_reward
+
+# Reproducibility
+seed: 42                                      # Random seed for reproducible training

@@ -1,0 +1,114 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-7B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true                          # Reduce CPU memory usage during model loading
+
+
+
+# Data training arguments
+# Qwen2.5-Coder uses a different chat template optimized for code generation
+# We keep the original Qwen chat template for better code generation capabilities
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-Decadal-1000-seed42  # Update with actual dataset name after pushing
+dataset_prompt_column: problem
+system_prompt: "You are an expert coding assistant specializing in engineering design problems. You excel at writing clean, efficient Python code to solve complex optimization problems. Always break your reasoning into clear steps within a <think>...</think> block, write executable Python code in a <code>...</code> block, and provide your final answer in an <answer>...</answer> block. Focus on writing robust, generalizable code that can handle various problem instances."
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# --- GRPO core ---
+beta: 0.0                                        # Disable KL divergence penalty for maximum reward optimization
+
+# Enable clipping (needed for epsilon/epsilon_high to matter)
+num_iterations: 1                                # Number of PPO iterations per update
+
+# Asymmetric clipping (Clip-Higher)
+epsilon: 0.10                                    # Lower bound (1 - epsilon) = 0.9
+epsilon_high: 0.26                               # Upper bound (1 + epsilon_high) = 1.26
+
+# Length-robust loss (per-token normalization)
+loss_type: bnpo                                  # Use 'bnpo' for length-robust training
+
+# Advantage scaling like Magistral
+# scale_rewards: group                             # Group-relative reward scaling (handled by TRL internally)
+
+# Precision and Performance
+bf16: true                                    # Use bfloat16 precision for faster training and lower memory usage
+use_vllm: true                                # Use vLLM for efficient text generation during training
+use_liger_kernel: true                        # Use Liger kernel for optimized attention computation
+
+# Evaluation and Logging
+do_eval: false                                # Disable evaluation during training (we focus on RL training)
+log_completions: true                         # Log model completions for debugging and analysis
+log_level: info                               # Logging verbosity level
+logging_first_step: true                      # Log metrics from the very first training step
+logging_steps: 1                              # Log metrics every step (for detailed monitoring)
+logging_strategy: steps                       # Log based on number of steps (not epochs)
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 16              # Increased to maintain effective batch size after sequence length reduction
+gradient_checkpointing: true                 # Enabled for full fine-tuning memory efficiency
+gradient_checkpointing_kwargs:
+  use_reentrant: false                        # Disable reentrant checkpointing for compatibility
+
+# Learning Rate and Scheduling
+learning_rate: 5e-6                       # Aggressive learning rate for faster convergence
+warmup_ratio: 0.0                            # No warmup for aggressive training
+lr_scheduler_type: cosine
+
+# Sequence Length and Generation (Reduced for memory efficiency)
+max_prompt_length: 2048                       # Reduced from 2048 to save memory
+max_completion_length: 2048                   # Reduced from 4096 to save memory
+temperature: 1.0                              # Sampling temperature for text generation (1.0 = maximum exploration during training)
+
+# Training Duration and Steps
+max_steps: -1                                 # -1 = train for full num_train_epochs (no step limit)
+num_train_epochs: 3                          # Reduced epochs for faster training
+num_generations: 6                            # Generate 3 completions per prompt for RL training (must divide global batch size)
+
+# Batch Sizes (Optimized for LoRA training)
+per_device_train_batch_size: 2                # Reduced for LoRA memory efficiency
+per_device_eval_batch_size: 1                 # Keep eval batch size minimal for memory efficiency
+
+# Model Saving and Checkpointing
+output_dir: data/Qwen2.5-Coder-7B-Instruct-GRPO-Decadal  # Local directory for saving checkpoints
+overwrite_output_dir: true                    # Overwrite existing output directory (your preferred setting)
+save_strategy: "steps"                        # Save checkpoints based on number of steps
+save_steps: 5                                # Save checkpoint every 5 steps (less frequent, more stable)
+save_total_limit: 2                           # Keep the last 2 checkpoints (provides fallback options)
+
+# HuggingFace Hub Integration
+push_to_hub: false                             # Automatically push checkpoints to HuggingFace Hub
+hub_model_id: Qwen2.5-Coder-7B-Instruct-GRPO-Decadal  # Repository name on HuggingFace Hub
+hub_strategy: checkpoint                      # pushes the current model/tokenizer each save without creating per-step checkpoint folders on the Hub.
+hub_private_repo: true                        # Make the repository private
+
+# Experiment Tracking
+report_to:
+- wandb                                       # Log experiments to Weights & Biases
+
+# =============================================================================
+# UNIFIED REWARD FUNCTIONS FOR MULTI-DOMAIN SUPPORT
+# =============================================================================
+reward_funcs:
+- unified_simulator_reward                    # Main reward: domain-aware simulator performance
+- unified_format_reward                       # Format reward: checks for <think><code><answer> blocks
+- unified_code_execution_reward               # Code execution: runs Python code and validates consistency
+- unified_generalization_reward               # Generalization reward: evaluates code on 5 random test instances
+
+reward_weights:
+- 0.25                                         # Weight for unified_simulator_reward
+- 0.10                                         # Weight for unified_format_reward  
+- 0.20                                         # Weight for unified_code_execution_reward
+- 0.45                                         # Weight for unified_generalization_reward
+
+# Environment variables for Decadal simulator
+# Set DECADAL_SIMULATOR_URL environment variable to point to VASSAR server
+# Default: http://localhost:8080
+
+# Reproducibility
+seed: 42                                      # Random seed for reproducible training
+

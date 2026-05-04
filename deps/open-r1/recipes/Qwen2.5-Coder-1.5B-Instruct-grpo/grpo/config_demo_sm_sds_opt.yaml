@@ -1,0 +1,114 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-1.5B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+# Data training arguments
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-SDS-10k-seed42
+dataset_prompt_column: problem
+system_prompt: |
+  You are an expert engineering reasoning engine. Your task is to solve complex Synergistic Dependency Selection (SDS) optimization problems by writing a Python script.
+
+  FORMATTING RULES:
+  1. Begin with a <think> block.
+  2. End with a single <code> block containing the JSON-processing Python script.
+  3. No other text is allowed outside these blocks.
+
+  THINKING GUIDELINES:
+  Inside the <think> block, you must NOT just list steps. You must engage in a stream-of-consciousness reasoning process:
+  - **Deconstruct**: Analyze the JSON schema, constraints (precedence, mutex, groups), and the objective function deep down to first principles.
+  - **Hypothesize**: Propose an initial algorithm.
+  - **Critique & Refine**: aggressively question your own approach. Ask "What if this edge case happens?" or "Will this be too slow for N=100?". If you find a flaw, backtrack and propose a better approach.
+  - **Simulate**: Mentally dry-run your logic with a small hypothetical example to ensure constraints are respected.
+  - **Finalize**: Only after verifying your logic, verify the I/O requirements (stdin/stdout/JSON).
+
+  Your goal is to maximize robustness and correctness through deep verification before writing a single line of code.
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# --- GRPO core ---
+beta: 0.0
+num_iterations: 1
+epsilon: 0.10
+epsilon_high: 0.26
+loss_type: bnpo
+
+# Precision and Performance
+bf16: true
+use_liger_kernel: true
+
+# --- vLLM Integrated Configuration ---
+use_vllm: true
+
+
+# Evaluation and Logging
+do_eval: false
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+
+# Gradient and Memory Management
+gradient_accumulation_steps: 8    # (4 GPUs * 4 Batch * 8 Accum = 128 Global Batch)
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Learning Rate and Scheduling
+learning_rate: 5e-6
+warmup_ratio: 0.0
+lr_scheduler_type: cosine
+
+# Sequence Length
+max_prompt_length: 2048
+max_completion_length: 8192       # Long context
+temperature: 1.0
+
+# Training Duration
+max_steps: -1
+num_train_epochs: 3
+num_generations: 6                # Generate 8 completions (2 per GPU per step)
+
+# Batch Sizes
+per_device_train_batch_size: 4    # Set to 4 to handle the 6k total context length safely
+per_device_eval_batch_size: 1
+
+# Model Saving
+output_dir: data/Qwen2.5-Coder-1.5B-Instruct-GRPO-SM
+overwrite_output_dir: true
+save_strategy: "steps"
+save_steps: 5
+save_total_limit: 2
+
+# Hub
+push_to_hub: false
+hub_model_id: Qwen2.5-Coder-1.5B-Instruct-GRPO-SM
+hub_strategy: checkpoint
+hub_private_repo: true
+
+# Tracking
+report_to:
+- wandb
+
+# =============================================================================
+# REWARD FUNCTIONS
+# =============================================================================
+reward_funcs:
+- unified_format_reward
+- unified_code_execution_reward
+- unified_generalization_reward
+
+reward_weights:
+- 0.10
+- 0.50
+- 0.40
+
+# Reproducibility
+seed: 42
+

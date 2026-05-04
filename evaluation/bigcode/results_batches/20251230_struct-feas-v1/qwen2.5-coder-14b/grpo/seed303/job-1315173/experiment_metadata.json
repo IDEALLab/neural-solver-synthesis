@@ -1,0 +1,8 @@
+{
+  "model": "qwen2.5-coder-14b",
+  "seed": 303,
+  "job_id": "1315173",
+  "config_name": "config_hero",
+  "method_name": "Ours (Hero)",
+  "embedded_model_path": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_hero/job-1315173/checkpoint-90"
+}

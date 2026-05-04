@@ -1,0 +1,8 @@
+{
+  "model": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed202-config_ablation_diversity/job-1401181/checkpoint-90",
+  "training_scheme": "grpo",
+  "seed": 202,
+  "job_id": "1401181",
+  "config_name": null,
+  "method_name": null
+}

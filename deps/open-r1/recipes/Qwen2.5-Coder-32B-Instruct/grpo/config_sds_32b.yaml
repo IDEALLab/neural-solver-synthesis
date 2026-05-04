@@ -1,0 +1,66 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-32B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+# LoRA Configuration (Critical for 32B)
+use_peft: true
+peft_config:
+  peft_type: LORA
+  r: 64              # Increased rank for 32B reasoning
+  lora_alpha: 128
+  lora_dropout: 0.05
+  target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+
+# Data arguments
+dataset_name: SoheylM/OpenR1-SDS-10k-seed101  # (Overridden by Slurm script)
+max_prompt_length: 2048
+max_completion_length: 8192    # <--- 8K Context for Long Reasoning
+num_generations: 4
+max_grad_norm: 1.0
+
+# GRPO specifics
+use_vllm: true
+vllm_device: "auto"
+vllm_gpu_memory_utilization: 0.9  # Give vLLM space for 8k KV cache
+
+# Training arguments
+output_dir: data/Qwen2.5-32B-GRPO-SDS
+num_train_epochs: 1               # 1 Epoch is usually enough for 32B refinement
+per_device_train_batch_size: 1    # Keep small (1) for 32B + 8k context
+gradient_accumulation_steps: 16   # Aggregate to reach effective batch size
+learning_rate: 5.0e-6             # Lower LR for 32B (stable)
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+logging_steps: 1
+save_strategy: "steps"
+save_steps: 10
+save_total_limit: 2
+bf16: true
+gradient_checkpointing: true      # <--- MANDATORY FOR 32B
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Rewards (The Oracle-Anchored Setup)
+reward_funcs:
+- unified_format_reward
+- unified_code_execution_reward   # Contains your Oracle Logic
+- unified_generalization_reward   # Checks robustness
+
+reward_weights:
+- 0.1  # Format
+- 0.5  # Execution + Oracle (Primary Driver)
+- 0.4  # Generalization
+
+seed: 42
+report_to:
+- wandb

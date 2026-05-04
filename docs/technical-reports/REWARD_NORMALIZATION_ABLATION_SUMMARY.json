@@ -1,0 +1,206 @@
+{
+  "status_date": "2026-03-29",
+  "status": "three_seed_treatment_complete",
+  "branch": "codex/reward-normalization-ablation",
+  "experiment_type": "standalone_reviewer_ablation",
+  "metric_semantics": {
+    "pass_rate": "mean(feasible) over all rows",
+    "mean_gap": "mean((vbs_score - max(llm_score_if_feasible_else_0, 0))/vbs_score) over rows with vbs_score > 1e-6 and finite gap in [0,1]",
+    "valid_gap_count": "number of rows contributing to mean_gap",
+    "error_counts": "raw counts from error_type column",
+    "note": "Infeasible rows contribute 100% gap when vbs_score > 0."
+  },
+  "treatment": {
+    "config": "deps/open-r1/recipes/Qwen2.5-Coder-14B-Instruct/grpo/config_ablation_reward_normalization.yaml",
+    "reward_function": "unified_nominal_reward_topk_interaction_bound",
+    "normalization_variant": "topk_positive_interactions",
+    "held_fixed": [
+      "reward stack structure",
+      "reward weights 0.10/0.20/0.70",
+      "system prompt",
+      "dataset family and seed matching",
+      "training budget",
+      "SDS evaluation pipeline"
+    ]
+  },
+  "control": {
+    "batch_id": "20251230_struct-feas-v1",
+    "seeds": {
+      "101": {
+        "job_id": 1315163,
+        "pass_rate": 0.978,
+        "mean_gap": 0.035037591414655,
+        "valid_gap_count": 984,
+        "error_counts": {
+          "none": 978,
+          "timeout": 22
+        }
+      },
+      "202": {
+        "job_id": 1315168,
+        "pass_rate": 0.98,
+        "mean_gap": 0.05575129242383631,
+        "valid_gap_count": 980,
+        "error_counts": {
+          "none": 980,
+          "timeout": 20
+        }
+      },
+      "303": {
+        "job_id": 1315173,
+        "pass_rate": 0.977,
+        "mean_gap": 0.031538865487045695,
+        "valid_gap_count": 985,
+        "error_counts": {
+          "none": 977,
+          "timeout": 23
+        }
+      }
+    },
+    "aggregate": {
+      "pass_rate_mean": 0.9783333333333334,
+      "pass_rate_std": 0.0015275252316519532,
+      "mean_gap_mean": 0.04077591644184567,
+      "mean_gap_std": 0.013087335054249335
+    }
+  },
+  "treatment_runs": {
+    "101": {
+      "train_job_id": 1736090,
+      "eval_job_id": 1738057,
+      "batch_id": "20260327_reward-normalization-v1",
+      "state": "evaluated",
+      "wandb_run_id": "uzrvnaqx",
+      "train_terminal_state": "timeout_checkpoint90",
+      "evaluation_checkpoint": "checkpoint-90",
+      "result_dir": "CLUSTER_ROOT/llm-finetuning-reward-normalization/evaluation/sds/results_batches/20260327_reward-normalization-v1/qwen2.5-coder-14b/grpo/seed101/job-1736090",
+      "result": {
+        "pass_rate": 0.575,
+        "mean_gap": 0.4295453007125132,
+        "valid_gap_count": 984,
+        "error_counts": {
+          "constraint": 409,
+          "none": 575,
+          "timeout": 16
+        }
+      },
+      "comparison_to_control": {
+        "control_pass_rate": 0.978,
+        "control_mean_gap": 0.035037591414655,
+        "delta_pass_rate": -0.403,
+        "delta_mean_gap": 0.3945077092978582
+      },
+      "attempt_history": [
+        {
+          "train_job_id": 1735949,
+          "state": "failed",
+          "failure_reason": "launcher could not resolve worker IP because plain bash was not found in the srun probe"
+        },
+        {
+          "train_job_id": 1736007,
+          "eval_job_id": 1736008,
+          "state": "failed",
+          "failure_reason": "WANDB_API_KEY was not exported into the container-side training shell"
+        },
+        {
+          "train_job_id": 1736090,
+          "eval_job_id": 1736091,
+          "state": "partial_success",
+          "failure_reason": "training reached checkpoint-90 and then hit the 4-hour Slurm time limit, so the dependent evaluation did not start"
+        },
+        {
+          "eval_job_id": 1737865,
+          "state": "failed",
+          "failure_reason": "explicit-checkpoint evaluation failed because MODEL_PATH was not exported into the container-side shell"
+        }
+      ]
+    },
+    "202": {
+      "train_job_id": 1742835,
+      "eval_job_id": 1742836,
+      "batch_id": "20260327_reward-normalization-v1",
+      "state": "evaluated",
+      "train_terminal_state": "timeout_checkpoint90",
+      "evaluation_checkpoint": "checkpoint-90",
+      "result_dir": "CLUSTER_ROOT/llm-finetuning-reward-normalization/evaluation/sds/results_batches/20260327_reward-normalization-v1/qwen2.5-coder-14b/grpo/seed202/job-1742835",
+      "result": {
+        "pass_rate": 0.552,
+        "mean_gap": 0.45512011626668625,
+        "valid_gap_count": 980,
+        "error_counts": {
+          "none": 552,
+          "constraint": 420,
+          "timeout": 28
+        }
+      },
+      "comparison_to_control": {
+        "control_pass_rate": 0.98,
+        "control_mean_gap": 0.05575129242383631,
+        "delta_pass_rate": -0.428,
+        "delta_mean_gap": 0.39936882384285
+      },
+      "attempt_history": [
+        {
+          "train_job_id": 1738647,
+          "eval_job_id": 1738648,
+          "state": "failed",
+          "failure_reason": "training failed early before checkpoint-90, so the dependent evaluation had no checkpoint to evaluate"
+        },
+        {
+          "train_job_id": 1742835,
+          "eval_job_id": 1742836,
+          "state": "success",
+          "note": "training reached checkpoint-90, timed out at the 4-hour limit, and the dependent evaluation completed successfully"
+        }
+      ]
+    },
+    "303": {
+      "train_job_id": 1738649,
+      "eval_job_id": 1738650,
+      "batch_id": "20260327_reward-normalization-v1",
+      "state": "evaluated",
+      "train_terminal_state": "timeout_checkpoint90",
+      "evaluation_checkpoint": "checkpoint-90",
+      "result_dir": "CLUSTER_ROOT/llm-finetuning-reward-normalization/evaluation/sds/results_batches/20260327_reward-normalization-v1/qwen2.5-coder-14b/grpo/seed303/job-1738649",
+      "result": {
+        "pass_rate": 0.985,
+        "mean_gap": 0.04753333610379451,
+        "valid_gap_count": 985,
+        "error_counts": {
+          "none": 985,
+          "timeout": 15
+        }
+      },
+      "comparison_to_control": {
+        "control_pass_rate": 0.977,
+        "control_mean_gap": 0.031538865487045695,
+        "delta_pass_rate": 0.008000000000000007,
+        "delta_mean_gap": 0.015994470616748815
+      }
+    }
+  },
+  "treatment_aggregate": {
+    "pass_rate_mean": 0.7040000000000001,
+    "pass_rate_std": 0.2436247113902857,
+    "mean_gap_mean": 0.3107329176943313,
+    "mean_gap_std": 0.22829593209195104,
+    "error_counts_total": {
+      "none": 2112,
+      "constraint": 829,
+      "timeout": 59
+    }
+  },
+  "aggregate_comparison_to_control": {
+    "delta_pass_rate_mean": -0.2743333333333333,
+    "delta_mean_gap_mean": 0.2699570012524856
+  },
+  "interpretation": {
+    "headline": "The ablation shows substantial sensitivity to the nominal reward normalization heuristic.",
+    "main_points": [
+      "The treatment does not support a robustness claim.",
+      "The dominant degradation mode is feasibility and constraint satisfaction.",
+      "Under the repository's actual gap metric semantics, seed 202 also shows a large mean-gap degradation once infeasible outputs are correctly counted as 100% gap.",
+      "Seed 303 shows the treatment is not uniformly catastrophic, which points to strong seed sensitivity rather than a single deterministic failure mode."
+    ]
+  }
+}

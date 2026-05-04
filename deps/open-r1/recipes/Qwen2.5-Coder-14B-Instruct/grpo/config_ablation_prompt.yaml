@@ -1,0 +1,122 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-14B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+# Data training arguments
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+dataset_name: SoheylM/OpenR1-SDS-10k-seed101
+dataset_prompt_column: problem
+system_prompt: |
+  You are a coding assistant. Write a Python script to solve the Synergistic Dependency Selection (SDS) optimization problem.
+
+  FORMATTING RULES:
+  1. Begin with a <think> block.
+  2. End with a single <code> block containing the JSON-processing Python script.
+  3. No other text is allowed outside these blocks.
+
+  IO CONTRACT:
+  - Read JSON from stdin with keys {"requirements": {...}, "catalog": {...}}.
+  - Print JSON to stdout with key {"selection": {"variables": [...]}}.
+  - Use the python `json` library.
+
+# =============================================================================
+# GRPO TRAINER CONFIGURATION
+# =============================================================================
+
+# --- GRPO core ---
+beta: 0.0
+num_iterations: 1
+epsilon: 0.10
+epsilon_high: 0.26
+loss_type: bnpo
+
+# Precision and Performance
+bf16: true
+tf32: true
+use_liger_kernel: true
+torch_compile: false
+
+# --- vLLM Integrated Configuration ---
+use_vllm: true
+vllm_mode: "server"
+
+
+# Evaluation and Logging
+do_eval: false
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+
+# Gradient and Memory Management
+# -----------------------------------------------------------------------------
+# GLOBAL BATCH SIZE CALCULATION (DeepSpeed ZeRO-3 on 8 GPUs):
+# 1. Cluster Capacity: 8 GPUs * 8 Slots (per_device_batch) = 64 Total Slots
+# 2. Requirement: 1 Prompt needs 64 Generations (num_generations)
+# 3. Micro-Batch: 64 Slots / 64 Gen-per-Prompt = 1 Prompt per Forward Pass
+# 4. Global Batch: 1 Prompt * 4 Accumulation Steps = 4 Prompts per Global Step
+# -----------------------------------------------------------------------------
+gradient_accumulation_steps: 4    # Effective Global Batch Size = 4 Prompts
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Learning Rate and Scheduling
+learning_rate: 2e-6
+warmup_ratio: 0.0
+lr_scheduler_type: cosine
+
+# Sequence Length
+max_prompt_length: 2048
+max_completion_length: 3072       # Long context
+temperature: 1.0
+
+# Training Duration
+max_steps: -1
+num_train_epochs: 1               # At 4 prompts/step, 1 epoch = 2,000 steps
+num_generations: 64               # CRITICAL: This forces the cluster to handle only 1 prompt at a time (64/64=1)
+
+# Batch Sizes
+# NOTE: In GRPO, this defines "Generations per GPU", not Prompts.
+per_device_train_batch_size: 8    # 8 Gens * 8 GPUs = 64 Gens total (Exact fit for 1 Prompt)
+per_device_eval_batch_size: 1
+
+# Model Saving
+output_dir: data/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-Prompt
+overwrite_output_dir: true
+save_strategy: "steps"
+save_steps: 30                    # Saving every 30 steps = every 120 samples
+save_total_limit: 4
+
+# Hub
+push_to_hub: false
+hub_model_id: Qwen2.5-Coder-14B-Instruct-GRPO-SDS-Ablation-Prompt
+hub_strategy: checkpoint
+hub_private_repo: true
+
+# Tracking
+report_to:
+- wandb
+
+# =============================================================================
+# REWARD FUNCTIONS (ABLATION: No Generalization)
+# =============================================================================
+# This config replaces unified_generalization_reward with unified_nominal_reward
+# to test if generalization testing (5 random samples) is necessary
+reward_funcs:
+- unified_format_reward
+- unified_code_execution_reward_no_oracle
+- unified_nominal_reward  # ABLATION: Evaluates only on prompt's mission, no random sampling
+
+reward_weights:
+- 0.10
+- 0.20  # Same as Hero for fair comparison
+- 0.70  # Keeps same weight as generalization
+
+# Reproducibility
+seed: 42
+

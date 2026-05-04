@@ -1,0 +1,8 @@
+{
+  "model": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed303-config_hero/job-1401187/checkpoint-90",
+  "training_scheme": "grpo",
+  "seed": 303,
+  "job_id": "1401187",
+  "config_name": null,
+  "method_name": null
+}

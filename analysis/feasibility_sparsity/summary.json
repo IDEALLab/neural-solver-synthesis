@@ -1,0 +1,202 @@
+{
+  "integrity_issue_count": 0,
+  "integrity_issues": [],
+  "metadata": {
+    "job_to_seed": {
+      "1743423": 101,
+      "1743424": 202,
+      "1743425": 303
+    },
+    "logs_root": "CLUSTER_ROOT/logs",
+    "progress_bins_definition": "Pooled normalized progress bins over reward_call_index/max_reward_call_index.",
+    "stage_definition": "Per-seed terciles over reward_call_index."
+  },
+  "per_seed": [
+    {
+      "early": {
+        "feasible_completion_rate": 0.36372767857142857,
+        "frac_groups_with_any_feasible": 0.8785714285714286,
+        "mean_feasible_count_in_group": 23.27857142857143,
+        "n_groups": 140
+      },
+      "feasible_completion_rate": 0.63671875,
+      "frac_groups_with_any_feasible": 0.8904761904761904,
+      "job_id": "1743423",
+      "late": {
+        "feasible_completion_rate": 0.9232142857142858,
+        "frac_groups_with_any_feasible": 0.95,
+        "mean_feasible_count_in_group": 59.08571428571429,
+        "n_groups": 140
+      },
+      "mean_feasible_count_in_group": 40.75,
+      "middle": {
+        "feasible_completion_rate": 0.6232142857142857,
+        "frac_groups_with_any_feasible": 0.8428571428571429,
+        "mean_feasible_count_in_group": 39.885714285714286,
+        "n_groups": 140
+      },
+      "n_groups": 420,
+      "seed": 101
+    },
+    {
+      "early": {
+        "feasible_completion_rate": 0.360750786163522,
+        "frac_groups_with_any_feasible": 0.8742138364779874,
+        "mean_feasible_count_in_group": 23.08805031446541,
+        "n_groups": 159
+      },
+      "feasible_completion_rate": 0.4981080375782881,
+      "frac_groups_with_any_feasible": 0.7661795407098121,
+      "job_id": "1743424",
+      "late": {
+        "feasible_completion_rate": 0.54248046875,
+        "frac_groups_with_any_feasible": 0.69375,
+        "mean_feasible_count_in_group": 34.71875,
+        "n_groups": 160
+      },
+      "mean_feasible_count_in_group": 31.878914405010438,
+      "middle": {
+        "feasible_completion_rate": 0.590234375,
+        "frac_groups_with_any_feasible": 0.73125,
+        "mean_feasible_count_in_group": 37.775,
+        "n_groups": 160
+      },
+      "n_groups": 479,
+      "seed": 202
+    },
+    {
+      "early": {
+        "feasible_completion_rate": 0.36962890625,
+        "frac_groups_with_any_feasible": 0.9140625,
+        "mean_feasible_count_in_group": 23.65625,
+        "n_groups": 128
+      },
+      "feasible_completion_rate": 0.6625,
+      "frac_groups_with_any_feasible": 0.9376623376623376,
+      "job_id": "1743425",
+      "late": {
+        "feasible_completion_rate": 0.9723837209302325,
+        "frac_groups_with_any_feasible": 0.9767441860465116,
+        "mean_feasible_count_in_group": 62.23255813953488,
+        "n_groups": 129
+      },
+      "mean_feasible_count_in_group": 42.4,
+      "middle": {
+        "feasible_completion_rate": 0.64306640625,
+        "frac_groups_with_any_feasible": 0.921875,
+        "mean_feasible_count_in_group": 41.15625,
+        "n_groups": 128
+      },
+      "n_groups": 385,
+      "seed": 303
+    }
+  ],
+  "pooled": {
+    "feasible_completion_rate": 0.592739972741433,
+    "frac_groups_with_any_feasible": 0.8582554517133957,
+    "mean_feasible_count_in_group": 37.93535825545171,
+    "n_groups": 1284
+  },
+  "progress_bins": [
+    {
+      "bin_end": 0.1,
+      "bin_start": 0.0,
+      "feasible_completion_rate": 0.15625,
+      "frac_groups_with_any_feasible": 0.8449612403100775,
+      "mean_feasible_count_in_group": 10.0,
+      "n_groups": 129
+    },
+    {
+      "bin_end": 0.2,
+      "bin_start": 0.1,
+      "feasible_completion_rate": 0.3780517578125,
+      "frac_groups_with_any_feasible": 0.9296875,
+      "mean_feasible_count_in_group": 24.1953125,
+      "n_groups": 128
+    },
+    {
+      "bin_end": 0.3,
+      "bin_start": 0.2,
+      "feasible_completion_rate": 0.4881298449612403,
+      "frac_groups_with_any_feasible": 0.875968992248062,
+      "mean_feasible_count_in_group": 31.24031007751938,
+      "n_groups": 129
+    },
+    {
+      "bin_end": 0.4,
+      "bin_start": 0.3,
+      "feasible_completion_rate": 0.5845947265625,
+      "frac_groups_with_any_feasible": 0.9296875,
+      "mean_feasible_count_in_group": 37.4140625,
+      "n_groups": 128
+    },
+    {
+      "bin_end": 0.5,
+      "bin_start": 0.4,
+      "feasible_completion_rate": 0.6142962598425197,
+      "frac_groups_with_any_feasible": 0.7952755905511811,
+      "mean_feasible_count_in_group": 39.31496062992126,
+      "n_groups": 127
+    },
+    {
+      "bin_end": 0.6,
+      "bin_start": 0.5,
+      "feasible_completion_rate": 0.5773982558139535,
+      "frac_groups_with_any_feasible": 0.7364341085271318,
+      "mean_feasible_count_in_group": 36.95348837209303,
+      "n_groups": 129
+    },
+    {
+      "bin_end": 0.7,
+      "bin_start": 0.6,
+      "feasible_completion_rate": 0.7257080078125,
+      "frac_groups_with_any_feasible": 0.8828125,
+      "mean_feasible_count_in_group": 46.4453125,
+      "n_groups": 128
+    },
+    {
+      "bin_end": 0.8,
+      "bin_start": 0.7,
+      "feasible_completion_rate": 0.7854893410852714,
+      "frac_groups_with_any_feasible": 0.8682170542635659,
+      "mean_feasible_count_in_group": 50.27131782945737,
+      "n_groups": 129
+    },
+    {
+      "bin_end": 0.9,
+      "bin_start": 0.8,
+      "feasible_completion_rate": 0.8309326171875,
+      "frac_groups_with_any_feasible": 0.8984375,
+      "mean_feasible_count_in_group": 53.1796875,
+      "n_groups": 128
+    },
+    {
+      "bin_end": 1.0,
+      "bin_start": 0.9,
+      "feasible_completion_rate": 0.7880329457364341,
+      "frac_groups_with_any_feasible": 0.8217054263565892,
+      "mean_feasible_count_in_group": 50.434108527131784,
+      "n_groups": 129
+    }
+  ],
+  "stage_pooled": {
+    "early": {
+      "feasible_completion_rate": 0.3643881733021077,
+      "frac_groups_with_any_feasible": 0.8875878220140515,
+      "mean_feasible_count_in_group": 23.320843091334893,
+      "n_groups": 427
+    },
+    "late": {
+      "feasible_completion_rate": 0.7960008741258742,
+      "frac_groups_with_any_feasible": 0.8624708624708625,
+      "mean_feasible_count_in_group": 50.94405594405595,
+      "n_groups": 429
+    },
+    "middle": {
+      "feasible_completion_rate": 0.616822429906542,
+      "frac_groups_with_any_feasible": 0.8247663551401869,
+      "mean_feasible_count_in_group": 39.47663551401869,
+      "n_groups": 428
+    }
+  }
+}

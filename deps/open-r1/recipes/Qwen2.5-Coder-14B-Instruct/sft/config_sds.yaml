@@ -1,0 +1,33 @@
+# Model arguments
+model_name_or_path: Qwen/Qwen2.5-Coder-14B-Instruct
+model_revision: main
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+use_cache: false
+
+# Data arguments
+dataset_name: SoheylM/OpenR1-SDS-SFT
+dataset_configs:
+- all
+dataset_num_proc: 8     # Parallelize dataset processing
+max_seq_length: 16384   # Increased to handle your 15k token traces
+packing: true           # Critical for speed
+
+# Training arguments
+seed: 42                # Fixed seed for reproducibility (will be overridden by script)
+output_dir: checkpoints/Qwen2.5-14B-SDS-SFT
+num_train_epochs: 6
+per_device_train_batch_size: 1  # Lower batch size because context is huge (16k)
+gradient_accumulation_steps: 2  # Higher accum to compensate for low batch size
+learning_rate: 2.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+logging_steps: 1
+save_strategy: "no"
+eval_strategy: "no"
+bf16: true
+tf32: true
+gradient_checkpointing: true
+push_to_hub: false
+report_to:
+- wandb

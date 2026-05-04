@@ -1,0 +1,37 @@
+{
+  "name": "paper_soft_gate_v1",
+  "description": "SDS-only soft-gate ablation manifest for the matched nominal-gate study.",
+  "notes": "Tracks the frozen SDS comparison batch for the soft-gate ablation without changing the paper's main manifest. Add checkpoints and W&B run IDs after the batch is frozen.",
+  "sds": {
+    "result_roots": [
+      "evaluation/sds/results_batches/20260326_soft-gate-v1",
+      "evaluation/sds/results_batches/20251230_struct-feas-v1",
+      "evaluation/sds/results_batches/20251230_baselines-v1"
+    ],
+    "methods_included": {
+      "from_20260326_soft-gate-v1": [
+        "Ours (+Soft Gate) - staged rollout batch"
+      ],
+      "from_20251230_struct-feas-v1": [
+        "Ours (Hero) - 3 seeds",
+        "Baselines (extracted from Hero runs): CP-SAT, Local Search, Greedy, BnB"
+      ],
+      "from_20251230_baselines-v1": [
+        "Base (Best-of-64) - 3 seeds",
+        "ShinkaEvolve - 3 seeds"
+      ]
+    },
+    "files_needed": [
+      "metrics_final.csv",
+      "experiment_metadata.json",
+      "stratified_summary.csv"
+    ]
+  },
+  "additional_analyses": {
+    "universal_solver_search": {
+      "location": "evaluation/sds/universal_search_batches/20251230_struct-feas-v1/",
+      "description": "Inherited appendix analysis location so the standard aggregation tooling keeps working while this branch remains SDS-only.",
+      "aggregation_script": "evaluation/sds/aggregate_universal_search.py"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "/workspace/checkpoints/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-seed101-config_ablation_oracle/job-1401176/checkpoint-90",
+  "training_scheme": "grpo",
+  "seed": 101,
+  "job_id": "1401176",
+  "config_name": null,
+  "method_name": null
+}
