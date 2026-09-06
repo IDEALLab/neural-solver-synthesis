@@ -20,6 +20,10 @@ require large immutable model and evaluation artifacts.
 - Main report manifest: `experiments/report_sets/paper_public_main_v1.json`
 - Appendix report manifest: `experiments/report_sets/paper_public_appendix_v1.json`
 - Artifact inventory: `docs/release_artifact_inventory.json`
+- Immutable evidence snapshot:
+  `IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1@c34da924fbb4f0645e24b6061678bc206dd630a0`
+- Public visualization:
+  `https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==`
 
 ## Level 1: compact evidence
 

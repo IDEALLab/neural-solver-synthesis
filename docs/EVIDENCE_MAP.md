@@ -5,6 +5,15 @@ files in `artifacts/neurips2026/`. Exact values, uncertainty definitions, sample
 counts, checksums, and immutable remote revisions are recorded in
 `docs/final_evidence_index.json`.
 
+## Public Surfaces
+
+- [GitHub release](https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.0)
+- [Immutable Hugging Face evidence](https://huggingface.co/datasets/IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1/tree/c34da924fbb4f0645e24b6061678bc206dd630a0)
+- [Curated W&B report](https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==)
+
+The W&B report is an aggregated visualization surface. The checksum-verified
+files in GitHub and Hugging Face remain the canonical result store.
+
 ## SDS
 
 The certified SDS package reports exact optima where proved, explicit intervals

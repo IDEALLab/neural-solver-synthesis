@@ -39,3 +39,19 @@ def test_private_publication_documents_are_excluded_from_release_manifest() -> N
 
     assert not (REPO_ROOT / "docs" / "internal").exists()
     assert not (REPO_ROOT / "docs" / "openreview_responses").exists()
+
+
+def test_public_claim_pointers_are_complete_and_token_free() -> None:
+    import json
+
+    index = json.loads(
+        (REPO_ROOT / "docs" / "final_evidence_index.json").read_text()
+    )
+    for claim in index["claims"]:
+        assert len(claim["public_git_commit"]) == 40
+        assert claim["huggingface_repo"]
+        assert len(claim["huggingface_revision"]) == 40
+        assert claim["huggingface_path"] == claim["public_result_path"]
+        assert claim["wandb_url"].startswith("https://wandb.ai/")
+        assert "accessToken" not in claim["wandb_url"]
+        assert claim["wandb_panel"]

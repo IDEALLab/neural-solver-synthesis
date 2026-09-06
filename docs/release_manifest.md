@@ -38,6 +38,12 @@ metadata:
 - Human map: `docs/EVIDENCE_MAP.md`
 - Checksummed package: `artifacts/neurips2026/`
 - Validator: `scripts/validate_neurips2026_public_evidence.py`
+- GitHub release:
+  `https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.0`
+- Hugging Face evidence revision:
+  `IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1@c34da924fbb4f0645e24b6061678bc206dd630a0`
+- W&B report:
+  `https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==`
 
 The package contains the final SDS, adaptive-repair, cost, universal-search,
 prompt-sensitivity, JSSP, and TSP summaries. TSP trial rows and available frozen
