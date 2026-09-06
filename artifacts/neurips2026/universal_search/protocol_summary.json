@@ -1,0 +1,71 @@
+{
+  "candidate_pool": {
+    "extractable_records": 191699,
+    "global_unique_codes": 191699,
+    "raw_records": 192000,
+    "sha256": "90f0f0cbc25ed5bd9e4943d353317c22566d06b81c83cedcc52948b1d5d67614"
+  },
+  "clean_certified_result": {
+    "certified_optimal_rows": 2537,
+    "false_feasible_on_proved_infeasible": 0,
+    "feasible_rows": 2621,
+    "rows": 2672,
+    "seed_mean_all_feasible_gap_interval": [
+      0.18791452274654705,
+      0.20285257360723144
+    ],
+    "seed_mean_certified_gap": 0.18147402386826328,
+    "seed_mean_certified_optimum_attainment": 0.06441980379665226,
+    "seed_mean_pass_rate": 0.973420038962769,
+    "seed_std_certified_gap": 0.054226404213200484,
+    "seed_std_pass_rate": 0.022134635269741392
+  },
+  "paired_against_hero": {
+    "hero_advantage_ci95": [
+      0.13237530336275838,
+      0.15044886462009546
+    ],
+    "hero_certified_gap": 0.040133871030539066,
+    "hero_minus_tournament_pass_rate": 0.021365890881343,
+    "hero_pass_rate": 0.9946585272796642,
+    "hero_wins_ties_tournament_wins": [
+      2065,
+      135,
+      337
+    ],
+    "pass_difference_ci95": [
+      0.014679605897973798,
+      0.028089473113111718
+    ],
+    "tournament_certified_gap": 0.1810301483461514,
+    "tournament_minus_hero_certified_gap": 0.14089627731561233,
+    "tournament_pass_rate": 0.9732926363983212
+  },
+  "protocol_id": "certified-input-disjoint-universal-search-v3",
+  "selection": {
+    "development_evaluations_total": 15272040,
+    "development_rows_per_seed": 40,
+    "folds": {
+      "101": {
+        "development_evaluations": 5096680,
+        "eligible_candidates": 127417,
+        "selected_code_sha256": "efd19580e16ecea2252921f896af310af8b83173fa652d65f79e38ca53d4b4bc"
+      },
+      "202": {
+        "development_evaluations": 5094400,
+        "eligible_candidates": 127360,
+        "selected_code_sha256": "efd19580e16ecea2252921f896af310af8b83173fa652d65f79e38ca53d4b4bc"
+      },
+      "303": {
+        "development_evaluations": 5080960,
+        "eligible_candidates": 127024,
+        "selected_code_sha256": "6e22bf9231d9875dacdaad3148330e03b26b5fe2a622f2e27d78aba4dbb38993"
+      }
+    },
+    "test_outcomes_opened_before_freeze": false
+  },
+  "status": "complete",
+  "superseded_exploratory_result": {
+    "reason": "The historical tournament used final-test outcomes for selection and the pre-fix duplicate-sensitive objective scorer; it is not confirmatory evidence."
+  }
+}

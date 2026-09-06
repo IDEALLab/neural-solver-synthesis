@@ -1,0 +1,79 @@
+# N26-E12: zero-SFT TSP solver synthesis from the pinned Qwen base model.
+model_name_or_path: Qwen/Qwen2.5-Coder-14B-Instruct
+model_revision: aedcc2d42b622764e023cf882b6652e646b95671
+torch_dtype: bfloat16
+attn_implementation: flash_attention_2
+low_cpu_mem_usage: true
+
+dataset_name: SoheylM/OpenR1-TSP-ZeroSFT-12k-seed101
+dataset_prompt_column: problem
+dataset_train_split: train
+dataset_test_split: validation
+chat_template: "{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n' }}{% endif %}{{'<|im_start|>' + message['role'] + '\n' + message['content'] + '<|im_end|>' + '\n'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\n' }}{% endif %}"
+system_prompt: |
+  You are an expert combinatorial-optimization engineer. Write one self-contained,
+  white-box Python program that solves variable-size symmetric EUC_2D travelling
+  salesperson instances supplied only through stdin.
+
+  Output exactly one <think> block followed by one <code> block and no other text.
+  The program must read {"requirements": {...}, "catalog": {...}} and print exactly
+  {"selection":{"tour":[...]}}. The tour must contain every zero-based city ID
+  exactly once; do not repeat the first city because the evaluator closes the cycle.
+  Honor requirements.time_limit_sec. Seed any randomness from
+  requirements.random_seed. Use Python builtins, math, random, and optional numpy;
+  do not use files, networks, subprocesses, OR-Tools, or another black-box solver.
+  Develop a general search procedure from the coordinates rather than hardcoding an
+  instance. Check the permutation and JSON contract before finalizing the program.
+
+beta: 0.0
+num_iterations: 1
+epsilon: 0.10
+epsilon_high: 0.26
+loss_type: bnpo
+bf16: true
+tf32: true
+use_liger_kernel: true
+torch_compile: false
+use_vllm: true
+vllm_mode: server
+do_eval: false
+log_completions: true
+log_level: info
+logging_first_step: true
+logging_steps: 1
+logging_strategy: steps
+gradient_accumulation_steps: 4
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+learning_rate: 2.0e-6
+warmup_ratio: 0.0
+lr_scheduler_type: cosine
+max_prompt_length: 2048
+max_completion_length: 3072
+temperature: 1.0
+max_steps: -1
+num_train_epochs: 1
+num_generations: 64
+per_device_train_batch_size: 8
+per_device_eval_batch_size: 1
+output_dir: data/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-ZeroSFT
+overwrite_output_dir: true
+save_strategy: steps
+save_steps: 30
+save_total_limit: 4
+push_to_hub: false
+hub_model_id: Qwen2.5-Coder-14B-Instruct-GRPO-TSP-ZeroSFT
+hub_strategy: checkpoint
+hub_private_repo: true
+report_to:
+- wandb
+reward_funcs:
+- tsp_feasible_format_reward
+- tsp_feasible_execution_reward
+- tsp_feasible_quality_reward
+reward_weights:
+- 0.10
+- 0.20
+- 0.70
+seed: 42

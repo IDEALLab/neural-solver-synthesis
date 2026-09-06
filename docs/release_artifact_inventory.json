@@ -1,27 +1,36 @@
 {
   "release": {
     "name": "paper_public_release",
-    "branch": "release snapshot",
+    "branch": "sanitized_export",
     "main_manifest": "experiments/report_sets/paper_public_main_v1.json",
     "appendix_manifest": "experiments/report_sets/paper_public_appendix_v1.json"
   },
   "submodules": {
     "open_r1": {
       "path": "deps/open-r1",
-      "commit": "0fd3d1b0be4cb009fb8a1279ca6f2e52c4019d2f",
+      "commit": "fc26a663ee5d290a971f1172e673d6bc39ca0870",
+      "status": "pinned_in_release_branch"
+    },
+    "syndeopt": {
+      "path": "deps/syndeopt",
+      "commit": "d5bbbb8ebe5350db9fd07ce23bac766d9fc6f825",
       "status": "pinned_in_release_branch"
     },
     "shinka_evolve": {
       "path": "deps/ShinkaEvolve",
       "commit": "202269eb9adcb788e047470721c2cf91216fec89",
       "status": "pinned_in_release_branch"
+    },
+    "bigcode_evaluation_harness": {
+      "path": "deps/bigcode-evaluation-harness",
+      "commit": "b89ac82afbe9e945d44db8776d3b3fc56bf87c5b",
+      "status": "pinned_in_release_branch"
     }
   },
   "paper_bundles": {
     "sds_main": {
       "manifest": "experiments/report_sets/paper_public_main_v1.json",
-      "checked_in_bundle": "evaluation/sds/aggregated_report_batches/paper_public_main_v1",
-      "source_report_set": "experiments/report_sets/paper_main_results_v1.json"
+      "checked_in_bundle": "evaluation/sds/aggregated_report_batches/paper_public_main_v1"
     },
     "bigcode_main": {
       "manifest": "experiments/report_sets/paper_public_main_v1.json",
@@ -38,41 +47,46 @@
   "appendix_evidence": {
     "soft_gate": {
       "report_set": "experiments/report_sets/paper_soft_gate_v1.json",
-      "report": "docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md",
-      "status": "checked_in_report_with_external_result_roots"
+      "status": "portable_manifest_with_external_result_roots"
     },
     "reward_normalization": {
-      "report": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md",
-      "summary": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json",
-      "status": "checked_in"
+      "status": "reported_in_compact_final_evidence"
     },
     "feasibility_sparsity": {
-      "report": "docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md",
       "summary_dir": "analysis/feasibility_sparsity",
       "status": "checked_in"
     },
     "timeouts": {
-      "report": "docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md",
-      "status": "checked_in"
+      "status": "reported_in_checked_in_aggregate_bundles"
     }
   },
   "additional_domains": {
     "jssp": {
-      "status": "tracked_as_external_artifact",
+      "status": "public_with_compact_final_summary",
       "dataset_repo_ids": [
-        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed101",
-        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed202",
-        "SoheylM/OpenR1-JSSP-ContractV4-10k-seed303"
+        "IDEALLab/OpenR1-JSSP-ContractV4-10k-seed101",
+        "IDEALLab/OpenR1-JSSP-ContractV4-10k-seed202",
+        "IDEALLab/OpenR1-JSSP-ContractV4-10k-seed303"
       ],
       "summary_metrics": {
-        "pass_rate_mean": "99.3% ± 1.2%",
-        "gap_mean": "6.12% ± 3.80%"
+        "compile_once_trials_feasible": "750/750",
+        "mean_gap_interval": "7.29%-7.38%",
+        "ortools_mean_gap_upper": "2.13%"
       },
-      "notes": "JSSP artifacts are tracked through the companion public collection and evaluation bundle."
+      "summary": "artifacts/neurips2026/jssp/summary.json"
+    },
+    "tsp": {
+      "status": "public_boundary_evidence",
+      "summary": "artifacts/neurips2026/tsp/summary.json",
+      "per_trial": "artifacts/neurips2026/tsp/per_trial.csv",
+      "primary_gate_passed": false,
+      "parser_correction": "post-result and explicitly disclosed"
     }
   },
-  "publication_cleanup": {
-    "huggingface": "published with this release",
-    "wandb": "published with this release"
+  "final_evidence": {
+    "claim_index": "docs/final_evidence_index.json",
+    "human_map": "docs/EVIDENCE_MAP.md",
+    "compact_package": "artifacts/neurips2026",
+    "validator": "scripts/validate_neurips2026_public_evidence.py"
   }
 }

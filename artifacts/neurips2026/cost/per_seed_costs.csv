@@ -1,0 +1,75 @@
+method,seed,phase,value,unit,status,notes
+Hero,101,training,48.093333333333334,GH200-hours,measured,"Allocated capacity, not GPU utilization."
+Hero,101,training,14152.341116578,seconds,reconstructed,
+Hero,101,checkpoint_production,,seconds,included_in_training,Checkpoint production occurred inside the charged training run.
+Hero,101,generation,280.9797282218933,"GPU-seconds per 1,000 deployment instances",measured,One deterministic completion per prompt over the full frozen test prompt set.
+Base Best-of-64,101,generation,15.685970293045044,GPU-seconds per deployment instance,measured,64 completions per prompt; calibration generations are efficacy-excluded.
+Frozen Hero,101,generation,92.4527096748352,GPU-seconds per 64-completion compile,measured,
+Frozen Hero,101,development_reference,767.5091428439991,CPU-seconds,measured,Sum across 40 CP-SAT reference rows executed in parallel.
+Frozen Hero,101,development_execution,1354.3840177059174,CPU-seconds,measured,Sum across 800 unique-candidate executions.
+Frozen Hero,101,selection,29.815342903137207,seconds,measured,Parallel candidate execution and lexicographic selection wall; reference construction is separate.
+Frozen Hero,101,compile_job,0.9122222222222223,GH200-hours,measured,Billed allocation; active one-GPU synthesis is reported separately.
+Frozen Hero,101,final_execution,0.3584735176563263,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Frozen Hero,101,final_test_harness,53.26503539085388,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Hero,101,final_execution,0.3323749716,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Base Best-of-64,101,selection,19.1570543518,seconds per deployment instance,measured,Cumulative candidate subprocess wall and selection over 64 candidates; generation is separate.
+ShinkaEvolve,101,final_execution,0.1542862735,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Adaptive Repair,101,generation_repair_selection,428.5109417438507,seconds,measured,"Includes model load, 64 completions, feedback orchestration, development execution wall, and selection; pure generation is not separable and is not claimed."
+Adaptive Repair,101,development_reference,1987.5309444278246,CPU-seconds,measured,Sum of single-worker CP-SAT reference wall times; references execute in parallel.
+Adaptive Repair,101,development_execution,3251.7393732070923,CPU-seconds,measured,"Sum across all 2,560 development executions."
+Adaptive Repair,101,final_execution,0.3675586867332459,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Adaptive Repair,101,final_test_harness,42.83990740776062,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Adaptive Repair,101,full_job,1.2444444444444445,GH200-hours,measured,"Includes environment setup, reference construction, controller, and final test harness."
+ShinkaEvolve,101,generation,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,101,development_execution,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,101,selection,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+Hero,202,training,48.07666666666667,GH200-hours,measured,"Allocated capacity, not GPU utilization."
+Hero,202,training,14146.698900393,seconds,reconstructed,
+Hero,202,checkpoint_production,,seconds,included_in_training,Checkpoint production occurred inside the charged training run.
+Throughput calibration,202,full_generation_calibration_job,17.22222222222222,GH200-hours,measured,Efficacy-excluded measurement overhead; one GPU was active and 4 GPU(s) were allocated.
+Hero,202,generation,233.8534860610962,"GPU-seconds per 1,000 deployment instances",measured,One deterministic completion per prompt over the full frozen test prompt set.
+Base Best-of-64,202,generation,15.235472609758377,GPU-seconds per deployment instance,measured,64 completions per prompt; calibration generations are efficacy-excluded.
+Frozen Hero,202,generation,89.05846309661865,GPU-seconds per 64-completion compile,measured,
+Frozen Hero,202,development_reference,1909.3845528189559,CPU-seconds,measured,Sum across 40 CP-SAT reference rows executed in parallel.
+Frozen Hero,202,development_execution,49.92670178413391,CPU-seconds,measured,Sum across 240 unique-candidate executions.
+Frozen Hero,202,selection,6.690356731414795,seconds,measured,Parallel candidate execution and lexicographic selection wall; reference construction is separate.
+Frozen Hero,202,compile_job,0.8544444444444445,GH200-hours,measured,Billed allocation; active one-GPU synthesis is reported separately.
+Frozen Hero,202,final_execution,0.16721515488624572,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Frozen Hero,202,final_test_harness,26.739700317382812,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Hero,202,final_execution,0.0851176021,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Base Best-of-64,202,selection,19.485139267,seconds per deployment instance,measured,Cumulative candidate subprocess wall and selection over 64 candidates; generation is separate.
+ShinkaEvolve,202,final_execution,0.0966291814,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Adaptive Repair,202,generation_repair_selection,389.68398785591125,seconds,measured,"Includes model load, 64 completions, feedback orchestration, development execution wall, and selection; pure generation is not separable and is not claimed."
+Adaptive Repair,202,development_reference,1277.685946155223,CPU-seconds,measured,Sum of single-worker CP-SAT reference wall times; references execute in parallel.
+Adaptive Repair,202,development_execution,1282.3025906085968,CPU-seconds,measured,"Sum across all 2,560 development executions."
+Adaptive Repair,202,final_execution,0.21452439904212953,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Adaptive Repair,202,final_test_harness,20.55898880958557,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Adaptive Repair,202,full_job,1.1788888888888889,GH200-hours,measured,"Includes environment setup, reference construction, controller, and final test harness."
+ShinkaEvolve,202,generation,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,202,development_execution,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,202,selection,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+Hero,303,training,48.06666666666667,GH200-hours,measured,"Allocated capacity, not GPU utilization."
+Hero,303,training,14138.734061983,seconds,reconstructed,
+Hero,303,checkpoint_production,,seconds,included_in_training,Checkpoint production occurred inside the charged training run.
+Throughput calibration,303,full_generation_calibration_job,17.092222222222222,GH200-hours,measured,Efficacy-excluded measurement overhead; one GPU was active and 4 GPU(s) were allocated.
+Hero,303,generation,223.0732262134552,"GPU-seconds per 1,000 deployment instances",measured,One deterministic completion per prompt over the full frozen test prompt set.
+Base Best-of-64,303,generation,15.14349459218979,GPU-seconds per deployment instance,measured,64 completions per prompt; calibration generations are efficacy-excluded.
+Frozen Hero,303,generation,89.61120462417603,GPU-seconds per 64-completion compile,measured,
+Frozen Hero,303,development_reference,628.2473686050798,CPU-seconds,measured,Sum across 40 CP-SAT reference rows executed in parallel.
+Frozen Hero,303,development_execution,57.12110877037048,CPU-seconds,measured,Sum across 80 unique-candidate executions.
+Frozen Hero,303,selection,11.589030981063843,seconds,measured,Parallel candidate execution and lexicographic selection wall; reference construction is separate.
+Frozen Hero,303,compile_job,0.8722222222222222,GH200-hours,measured,Billed allocation; active one-GPU synthesis is reported separately.
+Frozen Hero,303,final_execution,0.20798440432548523,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Frozen Hero,303,final_test_harness,39.62782144546509,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Hero,303,final_execution,0.1453590555,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Base Best-of-64,303,selection,21.3644560852,seconds per deployment instance,measured,Cumulative candidate subprocess wall and selection over 64 candidates; generation is separate.
+ShinkaEvolve,303,final_execution,0.1285500169,seconds per deployment instance,measured,Candidate-program subprocess latency; generation is separate.
+Adaptive Repair,303,generation_repair_selection,450.0227394104004,seconds,measured,"Includes model load, 64 completions, feedback orchestration, development execution wall, and selection; pure generation is not separable and is not claimed."
+Adaptive Repair,303,development_reference,2441.293675192981,CPU-seconds,measured,Sum of single-worker CP-SAT reference wall times; references execute in parallel.
+Adaptive Repair,303,development_execution,1476.927951335907,CPU-seconds,measured,"Sum across all 2,560 development executions."
+Adaptive Repair,303,final_execution,0.16596151375770568,best-of-three seconds per deployment instance,measured,"The evaluator records the fastest of three subprocess wall times; this is benchmark latency, not total CPU utilization."
+Adaptive Repair,303,final_test_harness,26.045246839523315,"seconds per 1,000 instances with three repeats",measured,End-to-end parallel evaluation wall time; reported separately from per-instance latency.
+Adaptive Repair,303,full_job,1.25,GH200-hours,measured,"Includes environment setup, reference construction, controller, and final test harness."
+ShinkaEvolve,303,generation,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,303,development_execution,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."
+ShinkaEvolve,303,selection,,unavailable,unavailable,"Synthesis wall, token billing, and selection timing were not recoverable and are not imputed."

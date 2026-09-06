@@ -1,0 +1,116 @@
+{
+  "allocation_sensitivity": {
+    "allocation_sensitivity_control": true,
+    "reason": "Version 6 was declared after v5 test outcomes had been opened. It preserves the pinned model, controller, frozen development references, seeds, prompts, selection rule, and 64-completion schedule while changing reasoning effort and the non-binding output/reasoning allowance after v5 suffered pervasive allocation truncation.",
+    "test_blind_replacement_for_v5": false
+  },
+  "clean_certified_result": {
+    "certified_optimal_rows": 2537,
+    "false_feasible_on_proved_infeasible": 0,
+    "feasible_rows": 2621,
+    "per_seed": {
+      "101": {
+        "certified_gap": 0.0022106244480632744,
+        "pass_rate": 1.0
+      },
+      "202": {
+        "certified_gap": 0.007123923954446561,
+        "pass_rate": 0.9943374858437146
+      },
+      "303": {
+        "certified_gap": 0.0006972649378204518,
+        "pass_rate": 1.0
+      }
+    },
+    "rows": 2672,
+    "seed_mean_all_feasible_gap_interval": [
+      0.003669427083767225,
+      0.02747592776297357
+    ],
+    "seed_mean_certified_gap": 0.003343937780110096,
+    "seed_mean_certified_optimum_attainment": 0.9788280262763648,
+    "seed_mean_pass_rate": 0.9981124952812381,
+    "seed_std_certified_gap": 0.0033598788460957514,
+    "seed_std_pass_rate": 0.003269254072421423
+  },
+  "freeze_and_test_integrity": {
+    "all_192_response_ids_globally_unique": true,
+    "all_responses_completed": true,
+    "all_three_solver_hashes_frozen_before_test": true,
+    "false_feasible_on_51_proved_infeasible_rows": 0,
+    "one_test_evaluation_per_seed": true,
+    "selected_solvers": {
+      "101": "27f35d2a3cb738cd235288d30938d918023ab8e029e6b0d1204054b38d057e73",
+      "202": "48e0cf862ea179af7845a8baae53c2b101e60daa2c953e94c2afa74d49b42cfa",
+      "303": "09df092b6f664bf4b54cbc7f460cb640c61d33ebbb8b84fad2409ae355ad0638"
+    },
+    "selected_solvers_embed_no_development_or_test_ids": true,
+    "selected_solvers_use_only_standard_library_modules": true,
+    "test_outcomes_opened_before_freeze": false,
+    "unique_test_uuids_per_seed": 1000
+  },
+  "interpretation": "At the same 64-completion count, a pinned stronger hosted medium-reasoning execution-feedback controller matches or exceeds Hero on this SDS evaluation. This directly rules out any claim that RL is uniquely necessary or that non-RL repair cannot recover the solver. The comparison is not token-, dollar-, latency-, or training-compute-matched, and v6 is a post-v5 allocation-sensitivity follow-up rather than a test-blind replacement. Hero remains evidence that a smaller open model can amortize domain-specific solver synthesis into reusable policy weights; E10 shows that sufficiently strong deployment-time reasoning and repair is a viable alternative.",
+  "model": "gpt-5.4-mini-2026-03-17",
+  "paired_against_hero": {
+    "certified_optimal_rows": 2537,
+    "feasible_rows": 2621,
+    "hero_certified_gap": 0.040133871030539066,
+    "hero_minus_hosted_repair_certified_gap": 0.03675536226124147,
+    "hero_pass_rate": 0.9946585272796642,
+    "hero_wins_ties_hosted_repair_wins": [
+      19,
+      1288,
+      1230
+    ],
+    "hosted_repair_certified_gap": 0.0033785087692975893,
+    "hosted_repair_gap_advantage_ci95": [
+      0.03232275711329872,
+      0.041070852889651746
+    ],
+    "hosted_repair_minus_hero_pass_rate": 0.0034338038916444107,
+    "hosted_repair_pass_advantage_ci95": [
+      0.000422184320810169,
+      0.006927570273579496
+    ],
+    "hosted_repair_pass_rate": 0.9980923311713087
+  },
+  "protocol_id": "hosted-adaptive-repair-medium-reasoning-v6",
+  "reasoning_effort": "medium",
+  "status": "complete_all_seeds",
+  "token_and_cost_accounting": {
+    "all_attempt_observed_api_cost_usd": 68.46414635,
+    "authorized_all_attempt_cap_usd": 140.0,
+    "per_seed_v6_cost_usd": {
+      "101": 12.23283135,
+      "202": 13.702302,
+      "303": 11.1632139
+    },
+    "prior_v3_to_v5_observed_api_cost_usd": 31.3657991,
+    "v6_cached_input_tokens": 1809920,
+    "v6_input_tokens": 2583421,
+    "v6_observed_api_cost_usd": 37.09834725,
+    "v6_output_tokens_including_reasoning": 8084995,
+    "v6_reasoning_tokens": 6717112
+  },
+  "workload": {
+    "clean_certified_rows": 2672,
+    "completions_per_repair_round": 8,
+    "completions_per_seed": 64,
+    "completions_total": 192,
+    "development_executions_per_seed": 2560,
+    "development_executions_total": 7680,
+    "development_rows_per_completion": 40,
+    "initial_completions_per_seed": 8,
+    "join_keys": [
+      "seed",
+      "uuid"
+    ],
+    "repair_rounds": 7,
+    "seeds": [
+      101,
+      202,
+      303
+    ],
+    "test_rows_per_seed": 1000
+  }
+}

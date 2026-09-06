@@ -17,20 +17,20 @@ import json
 import logging
 import os
 import sys
+from pathlib import Path
 
 import datasets
 import transformers
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from transformers import set_seed
 from transformers.trainer_utils import get_last_checkpoint
+from trl import GRPOTrainer, ModelConfig, TrlParser, get_peft_config
 
 from open_r1.configs import GRPOConfig, GRPOScriptArguments
 from open_r1.rewards import get_reward_funcs
 from open_r1.utils import get_model, get_tokenizer
 from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
-from trl import GRPOTrainer, ModelConfig, TrlParser, get_peft_config
-
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,21 @@ def main(script_args, training_args, model_args):
         init_wandb_training(training_args)
 
     # Load the dataset
-    dataset = load_dataset(script_args.dataset_name, name=script_args.dataset_config)
+    dataset_path = Path(script_args.dataset_name)
+    if dataset_path.is_dir():
+        manifest_path = dataset_path / "n26_dataset_manifest.json"
+        if not manifest_path.is_file():
+            raise ValueError(f"local dataset manifest missing: {manifest_path}")
+        manifest = json.loads(manifest_path.read_text())
+        if manifest.get("dataset_revision") != script_args.dataset_revision:
+            raise ValueError("local dataset revision does not match the pinned revision")
+        dataset = load_from_disk(str(dataset_path))
+    else:
+        dataset = load_dataset(
+            script_args.dataset_name,
+            name=script_args.dataset_config,
+            revision=script_args.dataset_revision,
+        )
 
     ################
     # Load tokenizer

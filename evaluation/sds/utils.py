@@ -170,15 +170,69 @@ def validate_safety(code: str) -> tuple[bool, str]:  # noqa: PLR0911, PLR0912
     except SyntaxError as e:
         return False, f"Syntax Error: {e}"
 
-    # Allow 'sys' and 'json' as they are needed for I/O, but ban OS interaction
+    allowed_modules = {
+        "bisect",
+        "collections",
+        "functools",
+        "heapq",
+        "itertools",
+        "json",
+        "math",
+        "numpy",
+        "random",
+        "statistics",
+        "sys",
+        "time",
+    }
+    module_aliases = {
+        alias.asname or alias.name.split(".")[0]: alias.name.split(".")[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    numpy_file_functions = {
+        "fromfile",
+        "genfromtxt",
+        "load",
+        "loadtxt",
+        "memmap",
+        "save",
+        "savez",
+        "savez_compressed",
+        "tofile",
+    }
+
+    # Keep the explicit denylist for clear diagnostics, then reject every
+    # non-allowlisted import so less-obvious file/network modules cannot slip in.
     BANNED_MODULES = {  # noqa: N806
+        "aiohttp",
+        "builtins",
+        "dbm",
+        "fcntl",
+        "ftplib",
+        "glob",
+        "http",
+        "httpx",
+        "importlib",
+        "mmap",
         "os",
-        "subprocess",
-        "shutil",
         "pathlib",
         "pickle",
         "ctypes",
         "multiprocessing",
+        "ftplib",
+        "http",
+        "httpx",
+        "requests",
+        "shelve",
+        "shutil",
+        "smtplib",
+        "socket",
+        "sqlite3",
+        "ssl",
+        "subprocess",
+        "tempfile",
+        "urllib",
     }
     BANNED_FUNCTIONS = {  # noqa: N806
         "exec",
@@ -199,9 +253,19 @@ def validate_safety(code: str) -> tuple[bool, str]:  # noqa: PLR0911, PLR0912
                 module_name = alias.name.split(".")[0]
                 if module_name in BANNED_MODULES:
                     return False, f"Security: Import of '{alias.name}' is forbidden."
+                if module_name not in allowed_modules:
+                    return False, f"Security: Import of '{alias.name}' is not allowed."
         elif isinstance(node, ast.ImportFrom):
-            if node.module and node.module.split(".")[0] in BANNED_MODULES:
-                return False, f"Security: Import from '{node.module}' is forbidden."
+            if node.module:
+                module_name = node.module.split(".")[0]
+                if module_name in BANNED_MODULES:
+                    return False, f"Security: Import from '{node.module}' is forbidden."
+                if module_name not in allowed_modules:
+                    return False, f"Security: Import from '{node.module}' is not allowed."
+                if module_name == "numpy" and any(
+                    alias.name in numpy_file_functions for alias in node.names
+                ):
+                    return False, "Security: NumPy file API import is forbidden."
 
         # Check function calls
         elif isinstance(node, ast.Call):
@@ -215,6 +279,12 @@ def validate_safety(code: str) -> tuple[bool, str]:  # noqa: PLR0911, PLR0912
                         False,
                         f"Security: Attribute access '{node.func.attr}' is forbidden.",
                     )
+                if (
+                    isinstance(node.func.value, ast.Name)
+                    and module_aliases.get(node.func.value.id) == "numpy"
+                    and node.func.attr in numpy_file_functions
+                ):
+                    return False, f"Security: NumPy file API '{node.func.attr}' is forbidden."
             elif (
                 isinstance(node.func, ast.Call)
                 and isinstance(node.func.func, ast.Name)
@@ -229,6 +299,13 @@ def validate_safety(code: str) -> tuple[bool, str]:  # noqa: PLR0911, PLR0912
         # Check for __import__ in expressions
         elif isinstance(node, ast.Attribute) and node.attr in BANNED_ATTRIBUTES:
             return False, f"Security: Attribute '{node.attr}' access is forbidden."
+        elif (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "sys"
+            and node.attr == "modules"
+        ):
+            return False, "Security: Access to 'sys.modules' is forbidden."
 
     return True, ""
 
@@ -258,7 +335,10 @@ def run_candidate(code: str, stdin_obj: dict, timeout: float = 5.0) -> dict:  # 
     # SAFETY NET: Auto-inject execution block if missing
     # This handles newer trained models that generate `def solve_sds():` but forget the main block
     code_lower = code.lower()
-    if "def solve_sds" in code_lower:
+    solver_names = re.findall(
+        r"def\s+(solve_(?:sds|jssp|cvrp|tsp))\s*\(", code_lower
+    )
+    if solver_names:
         # Check if the function is actually called (not just mentioned in comments/strings)
         # Use AST to check for actual function calls, not just string matching
         has_execution_block = False
@@ -272,19 +352,25 @@ def run_candidate(code: str, stdin_obj: dict, timeout: float = 5.0) -> dict:  # 
                     if (
                         isinstance(node, ast.Call)
                         and isinstance(node.func, ast.Name)
-                        and node.func.id == "solve_sds"
+                        and node.func.id in solver_names
                     ):
                         has_execution_block = True
                         break
             except Exception:
                 # If AST parsing fails, fall back to simple string check
                 # But be more careful - check for solve_sds() followed by newline or end
-                if re.search(r"solve_sds\s*\(\s*\)\s*$", code, re.MULTILINE):
+                if any(
+                    re.search(rf"{name}\s*\(\s*\)\s*$", code, re.MULTILINE)
+                    for name in solver_names
+                ):
                     has_execution_block = True
 
         if not has_execution_block:
             # Auto-inject execution block
-            code += "\n\nif __name__ == '__main__':\n    solve_sds()\n"
+            code += (
+                "\n\nif __name__ == '__main__':\n"
+                f"    {solver_names[-1]}()\n"
+            )
 
     script_path = None
     try:

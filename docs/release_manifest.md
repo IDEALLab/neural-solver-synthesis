@@ -1,110 +1,80 @@
 # Paper Release Manifest
 
-This document defines the canonical code-release state for the paper "Beyond Inference-Time Search: Reinforcement Learning Synthesizes Reusable Solvers".
+This document defines the public code and evidence surface for "Beyond
+Inference-Time Search: Reinforcement Learning Synthesizes Reusable Solvers."
 
-## 1. Scope
+## Scope
 
-This release promotes the paper-backed revision work into one coherent reproducibility surface:
+The release contains:
 
-- refreshed SDS main comparison bundle
-- frozen-solver / fixed-code validation
-- manually specified constraint-aware SA baseline
-- refreshed neutral-prompt ShinkaEvolve comparison
-- soft-gate ablation
-- reward-normalization sensitivity
-- feasibility-sparsity analysis
-- timeout analysis
+- certified SDS references with exact optima, bound intervals, and transparent
+  handling of proved-infeasible instances;
+- duplicate-safe Base Best-of-64 scoring and a Hero-excluded virtual best solver;
+- same-model and hosted adaptive-repair controls;
+- input-disjoint universal search and end-to-end cost accounting;
+- inference-time and training-time `Hypothesize` sensitivity;
+- compile-once JSSP evidence and bounded TSP boundary evidence;
+- focused evaluation, aggregation, privacy, and consistency tests.
 
-CVRP is intentionally excluded from this release.
+CVRP is outside the release scope. The evidence does not claim that RL is
+uniquely necessary, that transfer is tuning-free, or that generated solvers
+dominate native solvers.
 
-## 2. Canonical submodule pins
+## Dependency snapshots
 
-- `deps/open-r1`
-  - commit: `0fd3d1b0be4cb009fb8a1279ca6f2e52c4019d2f`
-  - role: unified SDS reward/training stack with soft-gate, normalization, and feasibility logging support
-- `deps/ShinkaEvolve`
-  - commit: `202269eb9adcb788e047470721c2cf91216fec89`
-  - role: neutral-prompt SDS fairness rerun used by the final paper
+The export vendors exact dependency snapshots rather than public submodule
+metadata:
 
-## 3. Main paper bundles
+| Dependency | Commit | Role |
+| --- | --- | --- |
+| `deps/open-r1` | `fc26a663ee5d290a971f1172e673d6bc39ca0870` | Training and reward stack |
+| `deps/syndeopt` | `d5bbbb8ebe5350db9fd07ce23bac766d9fc6f825` | SDS instances and simulator |
+| `deps/ShinkaEvolve` | `202269eb9adcb788e047470721c2cf91216fec89` | Neutral-prompt evolutionary baseline |
+| `deps/bigcode-evaluation-harness` | `b89ac82afbe9e945d44db8776d3b3fc56bf87c5b` | Frozen code-evaluation support |
 
-### 3.1 Main manifest
+## Compact final evidence
 
-- manifest:
-  - `experiments/report_sets/paper_public_main_v1.json`
+- Claim index: `docs/final_evidence_index.json`
+- Human map: `docs/EVIDENCE_MAP.md`
+- Checksummed package: `artifacts/neurips2026/`
+- Validator: `scripts/validate_neurips2026_public_evidence.py`
 
-### 3.2 Checked-in outputs
+The package contains the final SDS, adaptive-repair, cost, universal-search,
+prompt-sensitivity, JSSP, and TSP summaries. TSP trial rows and available frozen
+solver programs are included. The same-model adaptive-repair programs remain
+identified by immutable SHA-256 values because their historical source files
+were unavailable in the compact publication workspace.
 
-- SDS:
-  - `evaluation/sds/aggregated_report_batches/paper_public_main_v1/`
-- BigCode:
-  - `evaluation/bigcode/aggregated_report_batches/paper_public_main_v1/`
+## Paper bundles
 
-### 3.3 Paper-facing mapping
+- SDS: `evaluation/sds/aggregated_report_batches/paper_public_main_v1/`
+- BigCode: `evaluation/bigcode/aggregated_report_batches/paper_public_main_v1/`
+- Fixed-code/runtime evidence:
+  `evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/`
+- Main report manifest: `experiments/report_sets/paper_public_main_v1.json`
+- Appendix report manifest: `experiments/report_sets/paper_public_appendix_v1.json`
 
-- Figure 1-5 SDS bundle
-  - source manifest: `experiments/report_sets/paper_public_main_v1.json`
-  - checked-in outputs: `evaluation/sds/aggregated_report_batches/paper_public_main_v1/`
-  - release snapshot note: `docs/NEURIPS_2026_CODE_RELEASE_SNAPSHOT.md`
-- BigCode table
-  - source manifest: `experiments/report_sets/paper_public_main_v1.json`
-  - checked-in output: `evaluation/bigcode/aggregated_report_batches/paper_public_main_v1/bigcode_results_table.tex`
+Large candidate pools, checkpoints, and raw evaluation roots are published as
+separate immutable artifacts rather than duplicated in Git.
 
-## 4. Appendix and supporting evidence
+## Corrections and limitations
 
-### 4.1 Fixed-code / runtime bundle
+- Base Best-of-64 is scored over unique selected IDs.
+- Universal search is input-disjoint and joins strictly on `(seed, uuid)`.
+- The hosted repair control is not token-, dollar-, latency-, or
+  training-compute-matched to the open-model control.
+- Its final allocation followed an earlier truncated attempt.
+- The corrected TSP parser was applied after outcomes were observed, so TSP is
+  reported as boundary evidence rather than blind confirmation.
+- The TSP primary quality/stability gate failed, and native baselines remained
+  stronger.
 
-- path:
-  - `evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/`
-- used for:
-  - frozen compile-once validation
-  - manual SA baseline comparison
-  - representative runtime accounting
+## Validation
 
-### 4.2 Soft-gate ablation
+```bash
+python scripts/validate_neurips2026_public_evidence.py
+./scripts/validate_paper_release.sh
+```
 
-- manifest:
-  - `experiments/report_sets/paper_soft_gate_v1.json`
-- report:
-  - `docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md`
-
-### 4.3 Reward-normalization sensitivity
-
-- report:
-  - `docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md`
-- machine-readable summary:
-  - `docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json`
-
-### 4.4 Feasibility sparsity
-
-- report:
-  - `docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md`
-- checked-in summaries:
-  - `analysis/feasibility_sparsity/summary.json`
-  - `analysis/feasibility_sparsity/per_seed_summary.csv`
-  - `analysis/feasibility_sparsity/progress_bins.csv`
-  - `analysis/feasibility_sparsity/stage_pooled_summary.csv`
-
-### 4.5 Timeout analysis
-
-- report:
-  - `docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md`
-
-### 4.6 Appendix manifest
-
-- manifest:
-  - `experiments/report_sets/paper_public_appendix_v1.json`
-
-## 5. Additional-domain evidence
-
-The paper includes JSSP evidence, and this release keeps the companion artifact identifiers explicit in `docs/release_artifact_inventory.json` so the additional-domain evidence remains easy to trace alongside the SDS core release.
-
-## 6. Default user journey
-
-The default public documentation path for this release is:
-
-1. `README.md`
-2. `docs/REPRODUCTION.md`
-3. `docs/technical-reports/README.md`
-
-Internal review-response archives are intentionally omitted from this standalone code release.
+See `docs/REPRODUCTION.md` for regeneration levels and `docs/LICENSING.md` for
+reuse terms.

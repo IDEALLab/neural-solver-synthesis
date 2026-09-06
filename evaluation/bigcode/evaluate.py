@@ -170,7 +170,7 @@ def log_to_wandb(  # noqa: PLR0912, PLR0913
     run_name = construct_wandb_run_name(model, seed, job_id, eval_tag)
 
     project = os.environ.get("WANDB_PROJECT", "qwen-coder-bigcode-rl")
-    entity = os.environ.get("WANDB_ENTITY", "smassoudi-eth-z-rich")
+    entity = os.environ.get("WANDB_ENTITY", "neural-solver-synthesis")
     batch_id = os.environ.get("BATCH_ID", None)
 
     print("\n📊 Logging evaluation results to W&B...")

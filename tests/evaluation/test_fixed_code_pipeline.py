@@ -133,6 +133,9 @@ def test_fixed_code_eval_writes_metadata_and_timing(tmp_path, monkeypatch):
 
     metadata = json.loads((output_dir / "experiment_metadata.json").read_text())
     timing = json.loads((output_dir / "timing_summary.json").read_text())
+    duplicate_audit = json.loads(
+        (output_dir / "duplicate_selection_audit.json").read_text()
+    )
     metrics = pd.read_csv(output_dir / "metrics_final.csv")
 
     assert metadata["method_name"] == "Frozen Hero"
@@ -141,6 +144,8 @@ def test_fixed_code_eval_writes_metadata_and_timing(tmp_path, monkeypatch):
     assert timing["seed"] == 101
     assert "code_snippet" in metrics.columns
     assert metrics.loc[0, "code_snippet"].strip()
+    assert metrics.loc[0, "duplicate_selection_count"] == 0
+    assert duplicate_audit["records_with_duplicate_selections"] == 0
 
 
 def test_runtime_aggregation_errors_when_timing_missing(tmp_path):

@@ -1,0 +1,26 @@
+[
+  {
+    "HeroExcludedVBSCoverage": 1.0,
+    "HeroExcludedVBSGapMean": 0.0382789536,
+    "HeroMinusExcludedVBSMean": -7.8380581817,
+    "HeroPassRate": 0.993166287,
+    "Rows": 878,
+    "Seed": 101
+  },
+  {
+    "HeroExcludedVBSCoverage": 1.0,
+    "HeroExcludedVBSGapMean": 0.0588442149,
+    "HeroMinusExcludedVBSMean": -11.5496572373,
+    "HeroPassRate": 1.0,
+    "Rows": 883,
+    "Seed": 202
+  },
+  {
+    "HeroExcludedVBSCoverage": 1.0,
+    "HeroExcludedVBSGapMean": 0.0359433073,
+    "HeroMinusExcludedVBSMean": -9.574399197,
+    "HeroPassRate": 0.9906976744,
+    "Rows": 860,
+    "Seed": 303
+  }
+]

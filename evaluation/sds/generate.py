@@ -8,6 +8,14 @@ import yaml
 from datasets import load_dataset
 from vllm import LLM, SamplingParams
 
+from evaluation.sds.prompt_variants import (
+    CANONICAL_VARIANT,
+    PROMPT_VARIANTS,
+    PromptVariantError,
+    apply_prompt_variant,
+    sha256_text,
+)
+
 # Magic value constants
 _MIN_MODEL_NAME_PARTS = 3
 
@@ -193,18 +201,14 @@ def construct_checkpoint_dir_name(
         model: Model name (e.g., "qwen2.5-coder-7b")
         training_scheme: Training scheme (e.g., "sft", "grpo", "sft-grpo")
         seed: Seed value (e.g., 101, 202, 303)
-        base_dir: Base checkpoint directory (default: /iopsstor/scratch/cscs/$USER/checkpoints)
+        base_dir: Base checkpoint directory. Defaults to `SDS_CHECKPOINT_ROOT`
+            when set, otherwise `./checkpoints`.
 
     Returns:
         Full path to checkpoint directory
     """
     if base_dir is None:
-        # Default checkpoint location (HPC Alps)
-        base_dir = (
-            Path("/iopsstor/scratch/cscs")
-            / os.environ.get("USER", "user")
-            / "checkpoints"
-        )
+        base_dir = Path(os.environ.get("SDS_CHECKPOINT_ROOT", "checkpoints"))
     else:
         base_dir = Path(base_dir)
 
@@ -354,7 +358,13 @@ Examples:
         "--base_checkpoint_dir",
         type=str,
         default=None,
-        help="Base directory for checkpoints (default: /iopsstor/scratch/cscs/$USER/checkpoints)",
+        help="Base checkpoint directory; defaults to SDS_CHECKPOINT_ROOT or ./checkpoints",
+    )
+    parser.add_argument(
+        "--model_revision",
+        type=str,
+        default=None,
+        help="Optional immutable Hugging Face model revision.",
     )
 
     parser.add_argument(
@@ -362,6 +372,27 @@ Examples:
         type=str,
         default="SoheylM/OpenR1-SDS-10k-seed303",
         help="Dataset to evaluate on",
+    )
+    parser.add_argument(
+        "--dataset_revision",
+        type=str,
+        default=None,
+        help="Optional immutable Hugging Face dataset revision.",
+    )
+    parser.add_argument(
+        "--dataset_split",
+        type=str,
+        default="test",
+        help="Dataset split to generate from (default: test).",
+    )
+    parser.add_argument(
+        "--uuid_list",
+        type=str,
+        default=None,
+        help=(
+            "Optional newline-delimited UUID allowlist. Rows are emitted in the "
+            "listed order and every UUID must occur exactly once in the split."
+        ),
     )
     parser.add_argument(
         "--output_file",
@@ -382,6 +413,12 @@ Examples:
         help="Number of samples per prompt (1 for greedy, >1 for Pass@K)",
     )
     parser.add_argument(
+        "--max_samples",
+        type=int,
+        default=0,
+        help="Optional deterministic prefix length for throughput calibration.",
+    )
+    parser.add_argument(
         "--temperature",
         type=float,
         default=0.0,
@@ -392,6 +429,18 @@ Examples:
         type=str,
         default=None,
         help="Path to YAML config file to load system_prompt from",
+    )
+    parser.add_argument(
+        "--prompt_variant",
+        choices=PROMPT_VARIANTS,
+        default=CANONICAL_VARIANT,
+        help="Predeclared system-prompt perturbation.",
+    )
+    parser.add_argument(
+        "--provenance_file",
+        type=str,
+        default=None,
+        help="Optional JSON path for model, dataset, and prompt provenance.",
     )
     args = parser.parse_args()
 
@@ -448,6 +497,58 @@ Examples:
     else:
         print("i  No config file provided, using default system prompt")
 
+    canonical_system_prompt = system_prompt
+    if args.prompt_variant != CANONICAL_VARIANT and canonical_system_prompt is None:
+        parser.error("Non-canonical prompt variants require an existing config_file")
+    if canonical_system_prompt is not None:
+        try:
+            system_prompt = apply_prompt_variant(
+                canonical_system_prompt, args.prompt_variant
+            )
+        except PromptVariantError as exc:
+            parser.error(str(exc))
+        print(f"Prompt variant: {args.prompt_variant}")
+        print(f"Canonical prompt SHA-256: {sha256_text(canonical_system_prompt)}")
+        print(f"Effective prompt SHA-256: {sha256_text(system_prompt)}")
+
+    if args.provenance_file:
+        provenance_path = Path(args.provenance_file)
+        provenance_path.parent.mkdir(parents=True, exist_ok=True)
+        provenance = {
+            "schema_version": 1,
+            "model_path": model_path,
+            "model_revision": args.model_revision,
+            "dataset": args.dataset,
+            "dataset_revision": args.dataset_revision,
+            "dataset_split": args.dataset_split,
+            "uuid_list": args.uuid_list,
+            "uuid_list_sha256": (
+                sha256_text(Path(args.uuid_list).read_text())
+                if args.uuid_list
+                else None
+            ),
+            "config_file": config_file_path,
+            "config_file_sha256": (
+                sha256_text(Path(config_file_path).read_text())
+                if config_file_path and Path(config_file_path).exists()
+                else None
+            ),
+            "prompt_variant": args.prompt_variant,
+            "canonical_system_prompt_sha256": (
+                sha256_text(canonical_system_prompt)
+                if canonical_system_prompt is not None
+                else None
+            ),
+            "effective_system_prompt_sha256": (
+                sha256_text(system_prompt) if system_prompt is not None else None
+            ),
+            "temperature": args.temperature,
+            "n_samples": args.n_samples,
+            "max_samples": args.max_samples,
+        }
+        provenance_path.write_text(json.dumps(provenance, indent=2) + "\n")
+        print(f"Saved generation provenance to {provenance_path}")
+
     print(f"Loading vLLM Model: {model_path}")
     # Check if it's a local path (exists on filesystem) or HuggingFace identifier
     # vLLM supports both: local paths and HF identifiers like "Qwen/Qwen2.5-Coder-7B-Instruct"
@@ -456,20 +557,47 @@ Examples:
     if not is_hf_identifier and not model_path_obj.exists():
         raise ModelPathNotFoundError(model_path)
 
+    llm_kwargs = {
+        "model": model_path,
+        "tensor_parallel_size": args.tensor_parallel_size,
+        "trust_remote_code": True,
+        "gpu_memory_utilization": 0.90,
+        "max_model_len": 8192,
+    }
+    if args.model_revision:
+        llm_kwargs["revision"] = args.model_revision
     llm = LLM(
-        model=model_path,
-        tensor_parallel_size=args.tensor_parallel_size,
-        trust_remote_code=True,
-        gpu_memory_utilization=0.90,
-        max_model_len=8192,
+        **llm_kwargs,
     )
     tokenizer = llm.get_tokenizer()
 
     print(f"Loading Dataset: {args.dataset}")
     try:
-        ds = load_dataset(args.dataset, split="test")
+        ds = load_dataset(
+            args.dataset, split=args.dataset_split, revision=args.dataset_revision
+        )
     except Exception as e:
         raise DatasetLoadError(args.dataset, e) from e
+    if args.uuid_list:
+        requested = [
+            line.strip()
+            for line in Path(args.uuid_list).read_text().splitlines()
+            if line.strip()
+        ]
+        if len(requested) != len(set(requested)):
+            parser.error("--uuid_list contains duplicate UUIDs")
+        by_uuid = {}
+        for index, uuid in enumerate(ds["uuid"]):
+            uuid = str(uuid)
+            if uuid in by_uuid:
+                parser.error(f"dataset split contains duplicate UUID: {uuid}")
+            by_uuid[uuid] = index
+        missing = [uuid for uuid in requested if uuid not in by_uuid]
+        if missing:
+            parser.error(f"--uuid_list UUIDs missing from split: {missing[:5]}")
+        ds = ds.select([by_uuid[uuid] for uuid in requested])
+    if args.max_samples > 0:
+        ds = ds.select(range(min(args.max_samples, len(ds))))
 
     print("Formatting Prompts...")
     prompts = [format_prompt(item, tokenizer, system_prompt) for item in ds]
@@ -493,6 +621,12 @@ Examples:
                     "prompt": output.prompt,
                     "generated_text": comp.text,
                     "sample_idx": i,
+                    "dataset_revision": args.dataset_revision,
+                    "model_revision": args.model_revision,
+                    "prompt_variant": args.prompt_variant,
+                    "system_prompt_sha256": (
+                        sha256_text(system_prompt) if system_prompt is not None else None
+                    ),
                 }
                 f.write(json.dumps(record) + "\n")
 

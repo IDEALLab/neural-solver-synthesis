@@ -12,3 +12,8 @@ if str(project_root) not in sys.path:
 deps_path = project_root / "deps"
 if str(deps_path) not in sys.path:
     sys.path.insert(0, str(deps_path))
+
+for dependency in ("open-r1", "syndeopt"):
+    source_path = deps_path / dependency / "src"
+    if str(source_path) not in sys.path:
+        sys.path.insert(0, str(source_path))

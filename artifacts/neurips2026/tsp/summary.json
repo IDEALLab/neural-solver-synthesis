@@ -1,0 +1,179 @@
+{
+  "all_outcomes_reported": true,
+  "primary_gate": {
+    "components": {
+      "all_trained_seeds_feasibility_at_least_0_95": true,
+      "all_trained_seeds_median_gap_below_0_10": false,
+      "stable_feasibility_range_at_most_0_05": true,
+      "stable_median_gap_range_at_most_0_05": false,
+      "trained_improves_over_base_each_seed": true,
+      "trained_macro_improves_over_best_simple_heuristic": false
+    },
+    "interpretation_if_failed": "Report the exact feasibility, family, size, baseline, and seed boundary; do not change solvers, instances, prompts, or the gate after seeing TSPLIB outcomes.",
+    "interpretation_if_passed": "Evidence supports TSP RL training directly from the base model without an SFT stage domain deployment under the predeclared synthetic-to-TSPLIB protocol; it does not establish universal transfer.",
+    "passed": false
+  },
+  "protocol_id": "N26-E12-v3",
+  "summaries": {
+    "base64": {
+      "101": {
+        "best_gap": 0.06319702602230483,
+        "feasibility": 1.0,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.0,
+        "mean_best_of_five_gap": 0.1060054310530739,
+        "mean_gap": 0.10600543105307389,
+        "mean_tour_length": 21927.75,
+        "mean_within_instance_gap_stddev": 0.0,
+        "median_gap": 0.09533923303834808,
+        "runtime_mean": 1.3154174242149261,
+        "runtime_stddev": 0.7711457856652075,
+        "trial_count": 60
+      },
+      "202": {
+        "best_gap": 0.36833731105807477,
+        "feasibility": 0.4166666666666667,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.17627933404684343,
+        "mean_best_of_five_gap": 0.8709651593402841,
+        "mean_gap": 0.93426832223466,
+        "mean_tour_length": 48268.76,
+        "mean_within_instance_gap_stddev": 0.04638387484143979,
+        "median_gap": 1.0,
+        "runtime_mean": 4.264497256672864,
+        "runtime_stddev": 1.0962944832989525,
+        "trial_count": 60
+      },
+      "303": {
+        "best_gap": 0.17090957305754442,
+        "feasibility": 0.4166666666666667,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.2278085598844048,
+        "mean_best_of_five_gap": 0.7610609758994538,
+        "mean_gap": 0.8440164765729538,
+        "mean_tour_length": 47822.28,
+        "mean_within_instance_gap_stddev": 0.06594706707744537,
+        "median_gap": 1.0,
+        "runtime_mean": 4.3786671864800155,
+        "runtime_stddev": 1.0324143117290068,
+        "trial_count": 60
+      },
+      "macro": {
+        "feasibility": 0.6111111111111112,
+        "mean_best_of_five_gap": 0.5793438554309372,
+        "mean_gap": 0.6280967432868959,
+        "mean_within_instance_gap_stddev": 0.03744364730629505,
+        "median_gap": 0.6984464110127827,
+        "runtime_mean": 3.3195272891226018
+      }
+    },
+    "insertion": {
+      "best_gap": 0.08472711471074991,
+      "feasibility": 1.0,
+      "instance_count": 12,
+      "max_within_instance_gap_stddev": 0.0,
+      "mean_best_of_five_gap": 0.13609594300289965,
+      "mean_gap": 0.13609594300289968,
+      "mean_tour_length": 21840.583333333332,
+      "mean_within_instance_gap_stddev": 0.0,
+      "median_gap": 0.13934941202061019,
+      "runtime_mean": 0.021464474809666474,
+      "runtime_stddev": 0.011298055388274286,
+      "trial_count": 60
+    },
+    "nearest_neighbor": {
+      "best_gap": 0.08472553699284009,
+      "feasibility": 1.0,
+      "instance_count": 12,
+      "max_within_instance_gap_stddev": 0.0,
+      "mean_best_of_five_gap": 0.15615279198816437,
+      "mean_gap": 0.1561527919881644,
+      "mean_tour_length": 22977.0,
+      "mean_within_instance_gap_stddev": 0.0,
+      "median_gap": 0.16380027554150867,
+      "runtime_mean": 0.032515766349388284,
+      "runtime_stddev": 0.016428877265278103,
+      "trial_count": 60
+    },
+    "ortools_single_worker": {
+      "best_gap": 0.0,
+      "feasibility": 1.0,
+      "instance_count": 12,
+      "max_within_instance_gap_stddev": 0.0,
+      "mean_best_of_five_gap": 0.009461384634026388,
+      "mean_gap": 0.009461384634026388,
+      "mean_tour_length": 19681.5,
+      "mean_within_instance_gap_stddev": 0.0,
+      "median_gap": 0.0053963635167139454,
+      "runtime_mean": 5.113391855564744,
+      "runtime_stddev": 0.035906477587210994,
+      "trial_count": 60
+    },
+    "trained": {
+      "101": {
+        "best_gap": 0.005027722958368575,
+        "feasibility": 1.0,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.0,
+        "mean_best_of_five_gap": 0.03779604070998612,
+        "mean_gap": 0.03779604070998612,
+        "mean_tour_length": 20288.5,
+        "mean_within_instance_gap_stddev": 0.0,
+        "median_gap": 0.03468822043289671,
+        "runtime_mean": 1.2788637861046785,
+        "runtime_stddev": 0.6701836240643707,
+        "trial_count": 60
+      },
+      "202": {
+        "best_gap": 0.16879644734457133,
+        "feasibility": 1.0,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.0693544240616561,
+        "mean_best_of_five_gap": 0.22950619660974048,
+        "mean_gap": 0.2747220483550107,
+        "mean_tour_length": 25664.816666666666,
+        "mean_within_instance_gap_stddev": 0.03733638766828483,
+        "median_gap": 0.26642158887512046,
+        "runtime_mean": 0.07934398779373926,
+        "runtime_stddev": 0.03547999047662692,
+        "trial_count": 60
+      },
+      "303": {
+        "best_gap": 0.020774970182786453,
+        "feasibility": 1.0,
+        "instance_count": 12,
+        "max_within_instance_gap_stddev": 0.02345822111840886,
+        "mean_best_of_five_gap": 0.04205548749476067,
+        "mean_gap": 0.060968412465886884,
+        "mean_tour_length": 20468.833333333332,
+        "mean_within_instance_gap_stddev": 0.01634923177835548,
+        "median_gap": 0.06365642904104443,
+        "runtime_mean": 1.3981424405006693,
+        "runtime_stddev": 0.8566006283084607,
+        "trial_count": 60
+      },
+      "macro": {
+        "feasibility": 1.0,
+        "mean_best_of_five_gap": 0.10311924160482909,
+        "mean_gap": 0.12449550051029457,
+        "mean_within_instance_gap_stddev": 0.017895206482213436,
+        "median_gap": 0.12158874611635388,
+        "runtime_mean": 0.9187834047996958
+      }
+    },
+    "two_opt": {
+      "best_gap": 0.0013406189036511062,
+      "feasibility": 1.0,
+      "instance_count": 12,
+      "max_within_instance_gap_stddev": 0.00774179931854378,
+      "mean_best_of_five_gap": 0.012331861646751418,
+      "mean_gap": 0.019006440300417923,
+      "mean_tour_length": 19755.283333333333,
+      "mean_within_instance_gap_stddev": 0.0040007199055725785,
+      "median_gap": 0.018779342723004695,
+      "runtime_mean": 1.5843000320058005,
+      "runtime_stddev": 0.89576006676977,
+      "trial_count": 60
+    }
+  }
+}

@@ -12,7 +12,7 @@ import re
 import json
 import resource
 import ast
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Optional, Tuple
 
 
 def normalize(s: str) -> str:
@@ -41,9 +41,28 @@ def validate_safety(code: str) -> Tuple[bool, str]:
     except SyntaxError as e:
         return False, f"Syntax Error: {e}"
     
+    allowed_modules = {
+        'bisect', 'collections', 'functools', 'heapq', 'itertools', 'json',
+        'math', 'numpy', 'random', 'statistics', 'sys', 'time',
+    }
+    module_aliases = {
+        alias.asname or alias.name.split('.')[0]: alias.name.split('.')[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    numpy_file_functions = {
+        'fromfile', 'genfromtxt', 'load', 'loadtxt', 'memmap', 'save', 'savez',
+        'savez_compressed', 'tofile',
+    }
+
     # Dangerous modules we explicitly ban
-    BANNED_MODULES = {'os', 'subprocess', 'shutil', 'pathlib', 'pickle', 'socket', 
-                      'urllib', 'requests', 'ftplib', 'smtplib', 'http'}
+    BANNED_MODULES = {
+        'aiohttp', 'builtins', 'dbm', 'fcntl', 'ftplib', 'glob', 'http', 'httpx',
+        'importlib', 'mmap', 'os', 'pathlib', 'pickle', 'requests', 'shelve',
+        'shutil', 'smtplib', 'socket', 'sqlite3', 'ssl', 'subprocess', 'tempfile',
+        'urllib',
+    }
     
     # Dangerous built-in functions (execution)
     BANNED_FUNCTIONS = {'exec', 'eval', 'open', 'input', '__import__', 'compile'}
@@ -52,13 +71,24 @@ def validate_safety(code: str) -> Tuple[bool, str]:
         # 1. Check 'import x' (e.g., import os)
         if isinstance(node, ast.Import):
             for alias in node.names:
-                if alias.name.split('.')[0] in BANNED_MODULES:
+                module_name = alias.name.split('.')[0]
+                if module_name in BANNED_MODULES:
                     return False, f"Security violation: Import of '{alias.name}' is forbidden."
+                if module_name not in allowed_modules:
+                    return False, f"Security violation: Import of '{alias.name}' is not allowed."
         
         # 2. Check 'from x import y' (e.g., from os import system)
         elif isinstance(node, ast.ImportFrom):
-            if node.module and node.module.split('.')[0] in BANNED_MODULES:
-                return False, f"Security violation: Import from '{node.module}' is forbidden."
+            if node.module:
+                module_name = node.module.split('.')[0]
+                if module_name in BANNED_MODULES:
+                    return False, f"Security violation: Import from '{node.module}' is forbidden."
+                if module_name not in allowed_modules:
+                    return False, f"Security violation: Import from '{node.module}' is not allowed."
+                if module_name == 'numpy' and any(
+                    alias.name in numpy_file_functions for alias in node.names
+                ):
+                    return False, "Security violation: NumPy file API import is forbidden."
         
         # 3. Check for dangerous function calls (e.g., open(), exec())
         elif isinstance(node, ast.Call):
@@ -70,6 +100,18 @@ def validate_safety(code: str) -> Tuple[bool, str]:
                 if isinstance(node.func.value, ast.Name):
                     if node.func.value.id in BANNED_MODULES:
                         return False, f"Security violation: Call to '{node.func.value.id}.{node.func.attr}' is forbidden."
+                    if (
+                        module_aliases.get(node.func.value.id) == 'numpy'
+                        and node.func.attr in numpy_file_functions
+                    ):
+                        return False, f"Security violation: NumPy file API '{node.func.attr}' is forbidden."
+        elif (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == 'sys'
+            and node.attr == 'modules'
+        ):
+            return False, "Security violation: Access to 'sys.modules' is forbidden."
     
     return True, ""
 
@@ -102,11 +144,13 @@ def run_candidate(code: str, stdin_obj: dict, timeout: float = 5.0) -> dict:
     # --- STEP 1.5: SAFETY NET - Auto-inject execution block if missing ---
     # This prevents false negatives when model forgets the main block but has valid logic
     code_lower = code.lower()
-    if "def solve_sds" in code_lower:
+    solver_names = re.findall(r"def\s+(solve_(?:sds|jssp|cvrp|tsp))\s*\(", code_lower)
+    if solver_names:
         # Check if the function is actually called
-        if "if __name__" not in code_lower and "solve_sds()" not in code_lower:
+        solver_name = solver_names[-1]
+        if "if __name__" not in code_lower and f"{solver_name}()" not in code_lower:
             # Auto-inject execution block
-            code += "\n\nif __name__ == '__main__':\n    solve_sds()\n"
+            code += f"\n\nif __name__ == '__main__':\n    {solver_name}()\n"
     
     # --- STEP 2: PREPARE EXECUTION ---
     script_path = None

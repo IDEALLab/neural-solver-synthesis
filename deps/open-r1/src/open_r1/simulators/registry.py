@@ -9,6 +9,7 @@ from .beams2d import Beams2DSimulator
 from .knapsack import KnapsackSimulator
 from .sds_simulator import SDSSimulator
 from .decadal_simulator import DecadalSimulator
+from .tsp_simulator import TSPSimulator
 
 
 class SimulatorRegistry:
@@ -26,6 +27,7 @@ class SimulatorRegistry:
             "knapsack": KnapsackSimulator,
             "sds": SDSSimulator,
             "decadal": DecadalSimulator,
+            "tsp": TSPSimulator,
         }
         self._instances = {}
     

@@ -25,23 +25,32 @@ from typing import Callable, Dict, Optional
 from latex2sympy2_extended import NormalizationConfig
 from math_verify import LatexExtractionConfig, parse, verify
 
-from .utils import is_e2b_available
-from .utils.ioi import SubtaskResult, add_includes, get_piston_client_from_env, score_subtask
+from .rewards_tsp import (
+    tsp_feasible_execution_reward,
+    tsp_feasible_format_reward,
+    tsp_feasible_quality_reward,
+)
 
 # Import clean unified rewards for multi-domain support
 from .rewards_unified_v2 import (
-    unified_format_reward,
-    unified_code_execution_reward,
-    unified_code_execution_reward_no_oracle,  # ABLATION: No oracle anchoring
-    unified_generalization_reward,
-    unified_nominal_reward,  # ABLATION: No generalization testing
-    unified_soft_nominal_reward,
-    unified_nominal_reward_topk_interaction_bound,
     minimal_feasibility_reward,  # Minimalist SDS reward: runs + schema + feasibility only
     reward_code_diversity_fast,  # Discovery: Forces batch diversity
-    reward_iterative_structure  # Discovery: Detects search algorithms
+    reward_iterative_structure,  # Discovery: Detects search algorithms
+    unified_code_execution_reward,
+    unified_code_execution_reward_no_oracle,  # ABLATION: No oracle anchoring
+    unified_format_reward,
+    unified_generalization_reward,
+    unified_nominal_reward,  # ABLATION: No generalization testing
+    unified_nominal_reward_topk_interaction_bound,
+    unified_soft_nominal_reward,
 )
-
+from .utils import is_e2b_available
+from .utils.ioi import (
+    SubtaskResult,
+    add_includes,
+    get_piston_client_from_env,
+    score_subtask,
+)
 
 if is_e2b_available():
     from dotenv import load_dotenv
@@ -647,6 +656,9 @@ def get_reward_funcs(script_args) -> list[Callable]:
         "minimal_feasibility_reward": minimal_feasibility_reward,
         "reward_code_diversity_fast": reward_code_diversity_fast,  # Discovery: Forces batch diversity
         "reward_iterative_structure": reward_iterative_structure,  # Discovery: Detects search algorithms
+        "tsp_feasible_format_reward": tsp_feasible_format_reward,
+        "tsp_feasible_execution_reward": tsp_feasible_execution_reward,
+        "tsp_feasible_quality_reward": tsp_feasible_quality_reward,
     }
     reward_funcs = [REWARD_FUNCS_REGISTRY[func] for func in script_args.reward_funcs]
 

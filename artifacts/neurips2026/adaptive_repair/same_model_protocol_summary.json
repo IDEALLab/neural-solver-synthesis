@@ -1,0 +1,162 @@
+{
+  "clean_certified_result": {
+    "AllFeasibleGapLowerMean": 0.6214171127,
+    "AllFeasibleGapUpperMean": 0.6310573835,
+    "CertifiedOptimalGapLowerMean": 0.6226461869,
+    "CertifiedOptimalGapMean": 0.6226461869,
+    "CertifiedOptimalGapStd": 0.1266928165,
+    "CertifiedOptimalGapUpperMean": 0.6226462537,
+    "CertifiedOptimalReferenceIntervalMax": 8.72606e-05,
+    "CertifiedOptimalReferenceIntervalMean": 6.5484e-06,
+    "CertifiedOptimalReferenceRelativeIntervalMax": 1.5188e-06,
+    "CertifiedOptimumAttainmentMean": 0.114365721,
+    "FalseFeasibleOnProvedInfeasible": 0,
+    "Method": "Adaptive Repair (64 completions)",
+    "PassRateFeasibleBenchmarkMean": 0.4856823373,
+    "PassRateFeasibleBenchmarkStd": 0.058722417,
+    "ProvedInfeasibleRows": 51,
+    "Seeds": 3
+  },
+  "clean_certified_result_by_seed": [
+    {
+      "AllFeasibleGapLowerMean": 0.5230415437,
+      "AllFeasibleGapUpperMean": 0.5347699601,
+      "CertifiedOptimalGapLowerMean": 0.5228319049,
+      "CertifiedOptimalGapMean": 0.5228319049,
+      "CertifiedOptimalGapUpperMean": 0.5228319878,
+      "CertifiedOptimalReferenceIntervalMax": 6.564e-05,
+      "CertifiedOptimalReferenceIntervalMean": 6.388e-06,
+      "CertifiedOptimalReferenceRelativeIntervalMax": 1.2149e-06,
+      "CertifiedOptimalRows": 847,
+      "CertifiedOptimumAttainmentRate": 0.1369539551,
+      "FalseFeasibleOnProvedInfeasible": 0,
+      "FeasibleBenchmarkRows": 878,
+      "Method": "Adaptive Repair (64 completions)",
+      "PassRateAllRows": 0.5089485459,
+      "PassRateFeasibleBenchmark": 0.5182232346,
+      "ProvedInfeasibleRows": 16,
+      "Rows": 894,
+      "Seed": 101,
+      "UnresolvedFeasibleRows": 31,
+      "UnresolvedGapLowerMean": 0.528769419,
+      "UnresolvedGapUpperMean": 0.8609461703
+    },
+    {
+      "AllFeasibleGapLowerMean": 0.7675288551,
+      "AllFeasibleGapUpperMean": 0.7702731133,
+      "CertifiedOptimalGapLowerMean": 0.7651756879,
+      "CertifiedOptimalGapMean": 0.7651756879,
+      "CertifiedOptimalGapUpperMean": 0.7651757178,
+      "CertifiedOptimalReferenceIntervalMax": 8.72606e-05,
+      "CertifiedOptimalReferenceIntervalMean": 6.1674e-06,
+      "CertifiedOptimalReferenceRelativeIntervalMax": 1.5188e-06,
+      "CertifiedOptimalRows": 859,
+      "CertifiedOptimumAttainmentRate": 0.0605355064,
+      "FalseFeasibleOnProvedInfeasible": 0,
+      "FeasibleBenchmarkRows": 883,
+      "Method": "Adaptive Repair (64 completions)",
+      "PassRateAllRows": 0.4086378738,
+      "PassRateFeasibleBenchmark": 0.4178935447,
+      "ProvedInfeasibleRows": 20,
+      "Rows": 903,
+      "Seed": 202,
+      "UnresolvedFeasibleRows": 24,
+      "UnresolvedGapLowerMean": 0.8517526304,
+      "UnresolvedGapUpperMean": 0.9527173918
+    },
+    {
+      "AllFeasibleGapLowerMean": 0.5736809393,
+      "AllFeasibleGapUpperMean": 0.5881290771,
+      "CertifiedOptimalGapLowerMean": 0.5799309681,
+      "CertifiedOptimalGapMean": 0.5799309681,
+      "CertifiedOptimalGapUpperMean": 0.5799310555,
+      "CertifiedOptimalReferenceIntervalMax": 6.11246e-05,
+      "CertifiedOptimalReferenceIntervalMean": 7.0899e-06,
+      "CertifiedOptimalReferenceRelativeIntervalMax": 1.1406e-06,
+      "CertifiedOptimalRows": 831,
+      "CertifiedOptimumAttainmentRate": 0.1456077016,
+      "FalseFeasibleOnProvedInfeasible": 0,
+      "FeasibleBenchmarkRows": 860,
+      "Method": "Adaptive Repair (64 completions)",
+      "PassRateAllRows": 0.512,
+      "PassRateFeasibleBenchmark": 0.5209302326,
+      "ProvedInfeasibleRows": 15,
+      "Rows": 875,
+      "Seed": 303,
+      "UnresolvedFeasibleRows": 29,
+      "UnresolvedGapLowerMean": 0.3945852888,
+      "UnresolvedGapUpperMean": 0.8230447998
+    }
+  ],
+  "interpretation": "The same-backbone 64-completion execution-feedback controller remains below Hero on the content-clean certified evaluation. It receives a substantial prompt and execution-feedback budget, but this single controller does not exhaust non-RL search and does not establish that reinforcement learning is uniquely necessary.",
+  "model": {
+    "repo_id": "Qwen/Qwen2.5-Coder-14B-Instruct",
+    "revision": "aedcc2d42b622764e023cf882b6652e646b95671"
+  },
+  "protocol_id": "same-model-adaptive-repair-content-clean-v1",
+  "selected_solver_sha256": {
+    "101": "dd22ada23c98af6465edb2af9dcf8011715fe9ea00fcf6ae10f7f970817e569c",
+    "202": "48a570114c6c1fb7cfbd34aa98e92889b73d80ce1a24c485b310687d1911f22e",
+    "303": "8418357623dd57bc03a949df348db8774fe75822a32531bc48f2168bc93c12c1"
+  },
+  "status": "complete",
+  "token_accounting": {
+    "completion_count": 192,
+    "generated_tokens": 238664,
+    "prompt_tokens": 3551369,
+    "seeds": [
+      {
+        "completion_count": 64,
+        "generated_tokens": 75939,
+        "generated_tokens_max": 1543,
+        "generated_tokens_min": 785,
+        "prompt_tokens": 1096901,
+        "prompt_tokens_max": 28665,
+        "prompt_tokens_min": 1038,
+        "seed": 101,
+        "sha256": "897b009f53647252d261caa43236bf29bc83497fb6662fad270bcf09cdb05e9a",
+        "total_tokens": 1172840
+      },
+      {
+        "completion_count": 64,
+        "generated_tokens": 81690,
+        "generated_tokens_max": 1637,
+        "generated_tokens_min": 961,
+        "prompt_tokens": 1124535,
+        "prompt_tokens_max": 28641,
+        "prompt_tokens_min": 1039,
+        "seed": 202,
+        "sha256": "6d74bca5e902ef7aa0373904c957fbad8bf73406be061848aa1cefb953166473",
+        "total_tokens": 1206225
+      },
+      {
+        "completion_count": 64,
+        "generated_tokens": 81035,
+        "generated_tokens_max": 2137,
+        "generated_tokens_min": 1043,
+        "prompt_tokens": 1329933,
+        "prompt_tokens_max": 28463,
+        "prompt_tokens_min": 1039,
+        "seed": 303,
+        "sha256": "114e6161799cc626f7937cdfa5da5c64cb2810d8c237d8d8facd4e1204e6a022",
+        "total_tokens": 1410968
+      }
+    ],
+    "total_tokens": 3790033
+  },
+  "workload": {
+    "completions_per_repair_round": 8,
+    "completions_per_seed": 64,
+    "completions_total": 192,
+    "development_executions_per_seed": 2560,
+    "development_rows_per_completion": 40,
+    "feedback": "Incumbent source code and bounded execution diagnostics are supplied at each repair round.",
+    "initial_completions_per_seed": 8,
+    "repair_rounds": 7,
+    "seeds": [
+      101,
+      202,
+      303
+    ]
+  }
+}

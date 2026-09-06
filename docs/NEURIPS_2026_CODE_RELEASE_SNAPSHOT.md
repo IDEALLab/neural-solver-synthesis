@@ -1,16 +1,13 @@
 # NeurIPS 2026 Code Release Snapshot
 
-This note records the canonical release snapshot used to derive both the public
-code-release export and the anonymized NeurIPS supplementary bundle.
+This note records the versioned public surfaces for the code release and the
+anonymized NeurIPS supplementary bundle.
 
-## Baseline
+## Release anchor
 
-- Branch:
-  - `release snapshot`
-- Annotated tag:
-  - `neurips2026-submission`
-- Commit:
-  - `882b8199b93229cc92942bd2161fb3266e52ed77`
+- The public Git commit and neutral release tag identify the exact released tree.
+- Immutable Hugging Face revisions identify large artifacts outside Git.
+- The evidence index records checksums for every compact result file.
 
 ## Paper
 
@@ -20,24 +17,24 @@ code-release export and the anonymized NeurIPS supplementary bundle.
 ## Artifact surfaces pinned at this snapshot
 
 - Hugging Face collection:
-  - `https://huggingface.co/collections/SoheylM/neural-solver-synthesis-698b3b24b714db59dde6bf02`
-- W&B final-paper workspace:
-  - `https://wandb.ai/smassoudi-eth-z-rich/qwen-coder-sds-rl?nw=httg3nl3fo8`
+  - `https://huggingface.co/collections/IDEALLab/neural-solver-synthesis`
+- W&B final-paper project:
+  - `https://wandb.ai/neural-solver-synthesis/qwen-coder-sds-rl?nw=01nxi1s0ex1`
 
 ## Submodule pins relevant to the release export
 
 - `deps/open-r1`
-  - `6ee5e32f4af11fb2f5d95fe8ecfca3ea8fbd6e0e`
+  - `fc26a663ee5d290a971f1172e673d6bc39ca0870`
 - `deps/syndeopt`
-  - `d5bbbb8b01b2149a615fd0f4981ebf9f3b3e1d2f`
+  - `d5bbbb8ebe5350db9fd07ce23bac766d9fc6f825`
 - `deps/ShinkaEvolve`
   - `202269eb9adcb788e047470721c2cf91216fec89`
 - `deps/bigcode-evaluation-harness`
-  - `b89ac8226700f9f1fb0f93834ca2ef8de1a0f5ff`
+  - `b89ac82afbe9e945d44db8776d3b3fc56bf87c5b`
 
 ## Export products
 
-The export pipeline emits two products from this exact source tag:
+The export pipeline emits two products from the same frozen scientific state:
 
 1. `public-release/`
    - a clean fresh git repository intended for the eventual public code release

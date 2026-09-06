@@ -33,16 +33,15 @@ bundle = data["appendix_evidence"]["fixed_code_and_runtime_bundle"]
 checks.append(bundle["path"])
 
 soft_gate = data["appendix_evidence"]["soft_gate"]
-checks.append(soft_gate["report"])
-
-reward_norm = data["appendix_evidence"]["reward_normalization"]
-checks.extend([reward_norm["report"], reward_norm["summary"]])
+checks.append(soft_gate["report_set"])
 
 feas = data["appendix_evidence"]["feasibility_sparsity"]
-checks.append(feas["report"])
 checks.extend(os.path.join(feas["summary_dir"], name) for name in feas["summary_files"])
 
-checks.append(data["appendix_evidence"]["timeouts"]["report"])
+checks.append(data["appendix_evidence"]["additional_domain_jssp"]["summary"])
+checks.append(data["appendix_evidence"]["additional_domain_tsp"]["summary"])
+checks.append(data["appendix_evidence"]["final_evidence"]["index"])
+checks.append(data["appendix_evidence"]["final_evidence"]["package"])
 
 missing = [path for path in checks if not os.path.exists(path)]
 if missing:
@@ -51,19 +50,21 @@ if missing:
         print(f"  - {path}")
     sys.exit(1)
 
-print("✅ Checked-in appendix/supporting artifacts are present.")
+print("Checked-in appendix and supporting artifacts are present.")
 PY
+
+python scripts/validate_neurips2026_public_evidence.py
 
 echo ""
 SOFT_GATE_ROOT="evaluation/sds/results_batches/20260326_soft-gate-v1"
 if [ -f "$SOFT_GATE_REPORT_SET" ] && [ -d "$SOFT_GATE_ROOT" ]; then
-    echo "📊 Regenerating SDS soft-gate aggregate from $SOFT_GATE_REPORT_SET ..."
+    echo "Regenerating SDS soft-gate aggregate from $SOFT_GATE_REPORT_SET ..."
     python evaluation/sds/aggregate_plots.py \
         --report-set "$SOFT_GATE_REPORT_SET" \
         --model-filter qwen2.5-coder-14b
-    echo "✅ Soft-gate SDS aggregate updated."
+    echo "Soft-gate SDS aggregate updated."
 else
-    echo "ℹ️  Skipping soft-gate re-aggregation."
+    echo "Skipping soft-gate re-aggregation."
     echo "   Expected report set: $SOFT_GATE_REPORT_SET"
     echo "   Expected result root: $SOFT_GATE_ROOT"
 fi

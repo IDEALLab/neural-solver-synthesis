@@ -1,8 +1,8 @@
-# llm-finetuning
+# Neural Solver Synthesis
 
 Code release for the paper "Beyond Inference-Time Search: Reinforcement Learning Synthesizes Reusable Solvers".
 
-This repository packages the paper-backed experiments as first-class reproducibility surfaces. The main benchmark is Synergistic Dependency Selection (SDS), with additional-domain evidence on the Job Shop Scheduling Problem (JSSP) inventoried in the release manifest.
+This repository packages the paper-backed experiments as first-class reproducibility surfaces. The main benchmark is Synergistic Dependency Selection (SDS), with additional-domain evidence on the Job Shop Scheduling Problem (JSSP) and a bounded Traveling Salesperson Problem (TSP) extension trained with RL directly from the base model without an SFT stage.
 
 ## Quick start
 
@@ -14,12 +14,8 @@ conda activate llm-finetuning
 # Validate everything that is honestly checkable from a local checkout
 ./scripts/validate_paper_release.sh
 
-# Recreate the main paper bundles from the canonical public manifest
-./scripts/generate_paper_results.sh
-
-# Validate appendix/supporting evidence and regenerate soft-gate plots when
-# the corresponding frozen SDS result roots are available locally
-./scripts/generate_paper_appendix_results.sh
+# Validate the compact final-evidence package directly
+python scripts/validate_neurips2026_public_evidence.py
 ```
 
 ## Canonical public entrypoints
@@ -32,6 +28,9 @@ conda activate llm-finetuning
   - `docs/release_manifest.md`
 - Machine-readable artifact inventory:
   - `docs/release_artifact_inventory.json`
+- Final evidence map:
+  - `docs/EVIDENCE_MAP.md`
+  - `docs/final_evidence_index.json`
 
 The checked-in paper bundles currently live at:
 
@@ -52,8 +51,11 @@ The public release path now includes:
 - soft-gate SDS ablation support
 - reward-normalization ablation support
 - feasibility-sparsity logging + summary artifacts
-- timeout analysis report
 - paper-aligned manifests, figures, tables, and release docs
+- certified SDS references and duplicate-safe Base Best-of-64 results
+- same-model and hosted adaptive-repair controls
+- input-disjoint universal search, end-to-end cost accounting, and prompt sensitivity
+- compile-once JSSP and bounded TSP evaluations, including adverse outcomes
 
 CVRP remains intentionally out of scope for this release.
 
@@ -66,12 +68,12 @@ This repository now has two complementary reproducibility modes:
    - use `docs/release_manifest.md` to map every paper-facing number to its source bundle
 
 2. **Frozen-artifact regeneration**
-   - regenerate the paper figures/tables from the canonical manifests once the frozen private result roots have been synced locally
-   - regenerate the appendix-only SDS analyses through the dedicated appendix manifest and helper script
+   - download the immutable large artifacts referenced by the evidence index
+   - regenerate paper figures and tables from the canonical report manifests
 
 The repo intentionally keeps the main SDS comparison frame separate from the late diagnostic ablations so the virtual-best-solver denominator for the headline figures remains stable.
 
-## Local vs cluster validation
+## Validation scope
 
 Most of the public-release surface can be validated on a MacBook:
 
@@ -79,16 +81,16 @@ Most of the public-release surface can be validated on a MacBook:
 - manifest and inventory integrity
 - shell syntax
 - SDS / BigCode / open-r1 tests
-- appendix/supporting-evidence validation
+- compact final-evidence checksum and claim validation
 
-The remaining cluster-only checks are:
+Full regeneration additionally requires:
 
-- `sbatch` / `srun` launcher smoke tests
-- EDF environment resolution
-- Capstor checkpoint and dataset path assumptions
-- any retraining or reevaluation that depends on GH200 resources or private frozen roots
+- the large model, generation, and evaluation artifacts linked from the evidence index
+- a compatible GPU environment for model inference or retraining
+- explicit local paths supplied by the user rather than embedded infrastructure paths
 
-Use `./scripts/validate_paper_release.sh` for the local portion first, then use `docs/REPRODUCTION.md` for the remaining cluster-only checks.
+Use `./scripts/validate_paper_release.sh` for the local portion first, then use
+`docs/REPRODUCTION.md` for the artifact-backed regeneration path.
 
 If you want the validator itself to exercise the full main-paper regeneration path, run:
 
@@ -103,8 +105,8 @@ llm-finetuning/
 ├── evaluation/                    # SDS + BigCode evaluation and aggregation
 ├── analysis/feasibility_sparsity/ # Checked-in feasibility-density summaries
 ├── experiments/report_sets/       # Canonical public manifests
-├── docs/                          # Release manifest, reproduction guide, technical reports
-├── scripts/                       # Training/evaluation launchers and reproducibility helpers
+├── docs/                          # Evidence map, release manifest, and reproduction guide
+├── scripts/                       # Portable aggregation and validation helpers
 ├── deps/                          # Pinned companion dependency trees
 └── tests/                         # Top-level validation tests
 ```
@@ -115,6 +117,6 @@ If you are trying to reproduce the paper, start here:
 
 1. `docs/release_manifest.md`
 2. `docs/REPRODUCTION.md`
-3. `docs/technical-reports/README.md`
+3. `docs/LICENSING.md`
 
-Internal review-response archives are intentionally omitted from this standalone code release.
+Private correspondence and internal publication records are intentionally omitted from this standalone code release.

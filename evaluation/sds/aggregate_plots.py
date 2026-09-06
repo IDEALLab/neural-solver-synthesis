@@ -241,6 +241,37 @@ def find_all_metrics_files_from_roots(result_roots: list[str]) -> list[str]:
     return out
 
 
+def compute_virtual_best_scores(
+    df: pd.DataFrame,
+    *,
+    excluded_methods: set[str] | None = None,
+    output_column: str = "virtual_best_score",
+) -> pd.DataFrame:
+    """Compute one feasible virtual-best score for every strict (Seed, uuid) key."""
+    required = {"Method", "Seed", "uuid", "feasible", "llm_score"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"VBS input is missing columns: {sorted(missing)}")
+    if df[["Seed", "uuid"]].isna().any().any():
+        raise ValueError("VBS input contains a null Seed or uuid")
+    duplicate = df.duplicated(["Method", "Seed", "uuid"], keep=False)
+    if duplicate.any():
+        keys = df.loc[duplicate, ["Method", "Seed", "uuid"]].head().to_dict("records")
+        raise ValueError(f"duplicate method rows for (Seed, uuid): {keys}")
+
+    excluded_methods = excluded_methods or set()
+    eligible = df[~df["Method"].isin(excluded_methods)].copy()
+    eligible = eligible[eligible["feasible"].fillna(False) & eligible["llm_score"].notna()]
+    scores = (
+        eligible.groupby(["Seed", "uuid"], observed=True)["llm_score"]
+        .max()
+        .rename(output_column)
+        .reset_index()
+    )
+    keys = df[["Seed", "uuid"]].drop_duplicates()
+    return keys.merge(scores, on=["Seed", "uuid"], how="left", validate="one_to_one")
+
+
 def select_latest_jobs(  # noqa: PLR0912, PLR0913
     files: list[str],
     max_jobs: int = 15,
@@ -1287,8 +1318,7 @@ def plot_scaling_analysis(output_path: str, result_roots: list[str] | None = Non
     """
     Figure 5: Scaling Analysis (Base Model Optimality Gap vs k with Hero overlay).
 
-    Shows that Base Model performance saturates at ~30% gap even with k=64,
-    while Hero achieves 4.1% gap with k=1, demonstrating algorithmic advantage.
+    Compare Base best-of-k scaling with measured Hero and Greedy references.
     """
     # Load base model scaling stats from all seeds
     # Search report-set result roots first, then fall back to legacy BASE_RESULT_DIR
@@ -1331,70 +1361,59 @@ def plot_scaling_analysis(output_path: str, result_roots: list[str] | None = Non
     gap_means = [np.mean(gap_data[k]) for k in k_sorted]
     gap_stds = [np.std(gap_data[k]) for k in k_sorted]
 
-    # Load Hero aggregated gap (from main results)
-    # Try to load from aggregated results or calculate from results_data if available
-    hero_gap = 4.1  # Default from known results
-    hero_gap_std = 1.3
-
-    # Try to get Hero gap from aggregated results if available
-    hero_result_files = list(
-        Path(BASE_RESULT_DIR).glob(
-            "qwen2.5-coder-14b/grpo/seed*/job-*/metrics_final.csv"
-        )
+    # Discover one measured Hero run per seed from metadata. Never substitute
+    # remembered paper values when source data is absent.
+    all_metrics = find_all_metrics_files_from_roots(search_dirs)
+    hero_result_files = select_latest_jobs(
+        all_metrics,
+        model_filter="qwen2.5-coder-14b",
+        jobs_per_seed=1,
+        allowed_methods=["Ours (Hero)"],
     )
-    hero_result_files = [str(f) for f in hero_result_files]
-    if hero_result_files:
-        # Find Hero job IDs (from the specific list)
-        hero_job_ids = ["1315163", "1315168", "1315173"]  # Hero for seeds 101, 202, 303
-        hero_gaps = []
-        for f in hero_result_files:
-            if any(job_id in f for job_id in hero_job_ids):
-                try:
-                    df_hero = pd.read_csv(f)
-                    df_valid = df_hero[
-                        (df_hero["feasible"]) & (df_hero["vbs_score"] > _EPSILON_MEDIUM)
-                    ].copy()
-                    if len(df_valid) > 0:
-                        llm_scores = df_valid["llm_score"].clip(lower=0.0)
-                        gap = (
-                            (df_valid["vbs_score"] - llm_scores) / df_valid["vbs_score"]
-                        ).mean() * 100
-                        hero_gaps.append(gap)
-                except Exception:
-                    continue
-        if hero_gaps:
-            hero_gap = np.mean(hero_gaps)
-            hero_gap_std = np.std(hero_gaps)
+    hero_gaps = []
+    for result_file in hero_result_files:
+        try:
+            df_hero = pd.read_csv(result_file)
+            df_valid = df_hero[
+                (df_hero["feasible"]) & (df_hero["vbs_score"] > _EPSILON_MEDIUM)
+            ].copy()
+            if len(df_valid) > 0:
+                llm_scores = df_valid["llm_score"].clip(lower=0.0)
+                gap = (
+                    (df_valid["vbs_score"] - llm_scores) / df_valid["vbs_score"]
+                ).mean() * 100
+                hero_gaps.append(gap)
+        except (KeyError, OSError, pd.errors.ParserError, ValueError) as error:
+            print(f"Warning: could not load measured Hero scaling data: {error}")
+    if not hero_gaps:
+        print("No measured Hero scaling data found. Skipping scaling plot.")
+        return
+    hero_gap = float(np.mean(hero_gaps))
+    hero_gap_std = float(np.std(hero_gaps))
 
     # Load Greedy baseline gap dynamically from baseline results
-    greedy_gap = 22.0  # Default fallback
     greedy_gaps = []
-    if hero_result_files:
-        # Baselines are extracted from Hero runs, so use the same files
-        for f in hero_result_files:
-            if any(job_id in f for job_id in hero_job_ids):
-                try:
-                    df_hero = pd.read_csv(f)
-                    # Check if Greedy baseline columns exist
-                    if (
-                        "score_greedy" in df_hero.columns
-                        and "feasible_greedy" in df_hero.columns
-                    ):
-                        df_valid = df_hero[
-                            (df_hero["feasible_greedy"])
-                            & (df_hero["vbs_score"] > _EPSILON_MEDIUM)
-                        ].copy()
-                        if len(df_valid) > 0:
-                            greedy_scores = df_valid["score_greedy"].clip(lower=0.0)
-                            gap = (
-                                (df_valid["vbs_score"] - greedy_scores)
-                                / df_valid["vbs_score"]
-                            ).mean() * 100
-                            greedy_gaps.append(gap)
-                except Exception:
-                    continue
-        if greedy_gaps:
-            greedy_gap = np.mean(greedy_gaps)
+    for result_file in hero_result_files:
+        try:
+            df_hero = pd.read_csv(result_file)
+            if (
+                "score_greedy" in df_hero.columns
+                and "feasible_greedy" in df_hero.columns
+            ):
+                df_valid = df_hero[
+                    (df_hero["feasible_greedy"])
+                    & (df_hero["vbs_score"] > _EPSILON_MEDIUM)
+                ].copy()
+                if len(df_valid) > 0:
+                    greedy_scores = df_valid["score_greedy"].clip(lower=0.0)
+                    gap = (
+                        (df_valid["vbs_score"] - greedy_scores)
+                        / df_valid["vbs_score"]
+                    ).mean() * 100
+                    greedy_gaps.append(gap)
+        except (KeyError, OSError, pd.errors.ParserError, ValueError) as error:
+            print(f"Warning: could not load measured Greedy scaling data: {error}")
+    greedy_gap = float(np.mean(greedy_gaps)) if greedy_gaps else None
 
     # Create plot
     _fig, ax = plt.subplots(figsize=(3.25, 2.5))
@@ -1432,19 +1451,20 @@ def plot_scaling_analysis(output_path: str, result_roots: list[str] | None = Non
         alpha=0.2,
     )
 
-    # Plot Greedy baseline for reference
-    ax.axhline(
-        y=greedy_gap,
-        color=PALETTE.get("Greedy", "#d62728"),
-        linestyle=":",
-        linewidth=1,
-        label="Greedy Baseline",
-        alpha=0.6,
-    )
+    # Plot Greedy only when it was measured in the same selected Hero runs.
+    if greedy_gap is not None:
+        ax.axhline(
+            y=greedy_gap,
+            color=PALETTE.get("Greedy", "#d62728"),
+            linestyle=":",
+            linewidth=1,
+            label="Greedy Baseline",
+            alpha=0.6,
+        )
 
     # Add annotation: "Algorithmic Gap" arrow/brace
     # Position: between Base at k=64 and Hero line
-    base_k64_gap = gap_means[-1] if len(gap_means) > 0 else 30.6
+    base_k64_gap = gap_means[-1]
     mid_gap = (base_k64_gap + hero_gap) / 2
     ax.annotate(
         "",
@@ -2291,7 +2311,7 @@ Examples:
             print("\n📊 Logging to W&B...")
             try:
                 project = os.getenv("WANDB_PROJECT", "sds-paper-aggregation")
-                entity = os.getenv("WANDB_ENTITY", "smassoudi-eth-z-rich")
+                entity = os.getenv("WANDB_ENTITY", "neural-solver-synthesis")
 
                 wandb.init(
                     project=project,

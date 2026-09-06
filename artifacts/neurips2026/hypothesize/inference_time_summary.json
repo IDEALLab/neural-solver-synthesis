@@ -1,0 +1,38 @@
+[
+  {
+    "AllFeasibleGapLowerMean": 0.0391730769,
+    "AllFeasibleGapUpperMean": 0.0593740269,
+    "CertifiedOptimalGapLowerMean": 0.0352531478,
+    "CertifiedOptimalGapMean": 0.0352531478,
+    "CertifiedOptimalGapStd": 0.0047329278,
+    "CertifiedOptimalGapUpperMean": 0.0352532549,
+    "CertifiedOptimalReferenceIntervalMax": 8.72606e-05,
+    "CertifiedOptimalReferenceIntervalMean": 6.5484e-06,
+    "CertifiedOptimalReferenceRelativeIntervalMax": 1.5188e-06,
+    "CertifiedOptimumAttainmentMean": 0.5378311576,
+    "FalseFeasibleOnProvedInfeasible": 0,
+    "Method": "Hero without Hypothesize",
+    "PassRateFeasibleBenchmarkMean": 0.9946213205,
+    "PassRateFeasibleBenchmarkStd": 0.0048188336,
+    "ProvedInfeasibleRows": 51,
+    "Seeds": 3
+  },
+  {
+    "AllFeasibleGapLowerMean": 0.0434770537,
+    "AllFeasibleGapUpperMean": 0.0639453936,
+    "CertifiedOptimalGapLowerMean": 0.0400070908,
+    "CertifiedOptimalGapMean": 0.0400070908,
+    "CertifiedOptimalGapStd": 0.015640302,
+    "CertifiedOptimalGapUpperMean": 0.0400071971,
+    "CertifiedOptimalReferenceIntervalMax": 8.72606e-05,
+    "CertifiedOptimalReferenceIntervalMean": 6.5484e-06,
+    "CertifiedOptimalReferenceRelativeIntervalMax": 1.5188e-06,
+    "CertifiedOptimumAttainmentMean": 0.5110653509,
+    "FalseFeasibleOnProvedInfeasible": 0,
+    "Method": "Ours (Hero)",
+    "PassRateFeasibleBenchmarkMean": 0.9946213205,
+    "PassRateFeasibleBenchmarkStd": 0.0048188336,
+    "ProvedInfeasibleRows": 51,
+    "Seeds": 3
+  }
+]

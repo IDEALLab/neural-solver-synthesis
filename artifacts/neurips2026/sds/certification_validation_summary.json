@@ -1,0 +1,63 @@
+{
+  "benchmark_subset": {
+    "manifest": "experiments/neurips2026/sds_clean_test_manifest_v2.json",
+    "protocol_id": "N26-SDS-clean-test-v2",
+    "row_count": 2672
+  },
+  "certified_optimal_count": 2865,
+  "certified_optimal_rate_all_rows": 0.955,
+  "certified_optimal_rate_feasible_instances": 0.9715157680569685,
+  "exact_status_count": 2916,
+  "exact_status_rate": 0.972,
+  "independently_reproved_infeasible_count": 51,
+  "manifest_sha256": "09b107df4d133ed3f1c45fb9ceca7fa1e3046ca890bc04faaaabb3f4c622ce94",
+  "row_count": 3000,
+  "seeds": [
+    {
+      "certified_optimal_count": 953,
+      "dataset": "SoheylM/OpenR1-SDS-10k-seed101",
+      "dataset_content_sha256": "140574d55fe33d125c5642f736ee26bbbc788151b236a960331479f8758c1638",
+      "exact_status_count": 969,
+      "independently_reproved_infeasible_count": 16,
+      "revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "row_count": 1000,
+      "seed": 101,
+      "status_counts": {
+        "FEASIBLE": 31,
+        "INFEASIBLE": 16,
+        "OPTIMAL": 953
+      }
+    },
+    {
+      "certified_optimal_count": 956,
+      "dataset": "SoheylM/OpenR1-SDS-10k-seed202",
+      "dataset_content_sha256": "7bb6db135463e74f2c1212aa327eec75a919c3e5e300fc737ffe6641d87ea101",
+      "exact_status_count": 976,
+      "independently_reproved_infeasible_count": 20,
+      "revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "row_count": 1000,
+      "seed": 202,
+      "status_counts": {
+        "FEASIBLE": 24,
+        "INFEASIBLE": 20,
+        "OPTIMAL": 956
+      }
+    },
+    {
+      "certified_optimal_count": 956,
+      "dataset": "SoheylM/OpenR1-SDS-10k-seed303",
+      "dataset_content_sha256": "4be1ef612dac22ab2023efaa5df8062edd8a469f02259d3a1f804767b20170bf",
+      "exact_status_count": 971,
+      "independently_reproved_infeasible_count": 15,
+      "revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "row_count": 1000,
+      "seed": 303,
+      "status_counts": {
+        "FEASIBLE": 29,
+        "INFEASIBLE": 15,
+        "OPTIMAL": 956
+      }
+    }
+  ],
+  "status": "validated"
+}
