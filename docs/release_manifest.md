@@ -39,7 +39,7 @@ metadata:
 - Checksummed package: `artifacts/neurips2026/`
 - Validator: `scripts/validate_neurips2026_public_evidence.py`
 - GitHub release:
-  `https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.0`
+  `https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.1`
 - Hugging Face evidence revision:
   `IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1@c34da924fbb4f0645e24b6061678bc206dd630a0`
 - W&B report:

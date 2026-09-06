@@ -7,7 +7,7 @@ counts, checksums, and immutable remote revisions are recorded in
 
 ## Public Surfaces
 
-- [GitHub release](https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.0)
+- [GitHub release](https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.1)
 - [Immutable Hugging Face evidence](https://huggingface.co/datasets/IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1/tree/c34da924fbb4f0645e24b6061678bc206dd630a0)
 - [Curated W&B report](https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==)
 
