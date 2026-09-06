@@ -27,7 +27,6 @@ Typical usage (inside repo env):
 from __future__ import annotations
 
 import argparse
-import contextlib
 import hashlib
 import json
 import os
@@ -65,6 +64,11 @@ except ImportError:
         mission_to_instance,
         run_candidate,
     )
+
+try:
+    from scoring import calculate_true_score
+except ImportError:
+    from evaluation.sds.scoring import calculate_true_score
 
 
 CODE_BLOCK_RE = re.compile(r"<code>\s*(.*?)\s*</code>", re.DOTALL | re.IGNORECASE)
@@ -119,22 +123,6 @@ def canonicalize_code(code: str) -> str:
 
 def hash_code(code: str) -> str:
     return hashlib.sha256(code.encode("utf-8")).hexdigest()[:16]
-
-
-def calculate_true_score(inst, selected_ids: list[int]) -> float:
-    # Matches evaluation/sds/evaluate.py semantics (preserve negative scores).
-    if not selected_ids:
-        return 0.0
-    s = 0.0
-    for i in selected_ids:
-        with contextlib.suppress(Exception):
-            # Out of bounds selections are infeasible anyway; treat as 0 contribution.
-            s += inst.w[i]
-    sel_set = set(selected_ids)
-    for (i, j), weight in inst.W.items():
-        if i in sel_set and j in sel_set:
-            s += weight
-    return float(s)
 
 
 def build_stdin_obj(mission_dict: dict) -> dict:

@@ -1,156 +1,91 @@
 # Paper Reproduction Guide
 
-This guide is organized around the canonical manifests for the paper release.
+This guide separates checks that run from a normal clone from workflows that
+require large immutable model and evaluation artifacts.
 
 ## Reproduction levels
 
-| Level | Goal | Requires private frozen result roots? | Typical command |
+| Level | Goal | Additional artifacts required? | Entry point |
 | --- | --- | --- | --- |
-| 1 | Verify the checked-in paper bundles | No | Inspect `evaluation/*/aggregated_report_batches/paper_public_main_v1/` |
-| 2 | Rebuild the main paper figures/tables from frozen SDS/BigCode roots | Yes | `./scripts/generate_paper_results.sh` |
-| 3 | Validate appendix/supporting evidence | Partly | `./scripts/generate_paper_appendix_results.sh` |
-| 4 | Full retraining / reevaluation | Yes (cluster + credentials) | Domain- and cluster-specific scripts in `scripts/` and `deps/open-r1/recipes/` |
+| 1 | Verify compact final evidence | No | `python scripts/validate_neurips2026_public_evidence.py` |
+| 2 | Run focused evaluator tests | No | `./scripts/validate_paper_release.sh` |
+| 3 | Regenerate aggregate tables and plots | Yes | `./scripts/generate_paper_results.sh` |
+| 4 | Repeat inference or training | Yes, plus suitable compute | Domain-specific code under `evaluation/` and `deps/open-r1/` |
 
-## Where each validation runs
+## Canonical entry points
 
-### MacBook-local validation
+- Human-readable claim map: `docs/EVIDENCE_MAP.md`
+- Machine-readable claim index: `docs/final_evidence_index.json`
+- Compact evidence package: `artifacts/neurips2026/`
+- Main report manifest: `experiments/report_sets/paper_public_main_v1.json`
+- Appendix report manifest: `experiments/report_sets/paper_public_appendix_v1.json`
+- Artifact inventory: `docs/release_artifact_inventory.json`
 
-The following can and should be validated from a normal local checkout:
+## Level 1: compact evidence
 
-- `./scripts/validate_paper_release.sh`
-- manifest and inventory parsing
-- checked-in bundle presence
-- SDS / BigCode / open-r1 unit tests
-- appendix/supporting-evidence validation
-- shell syntax for release scripts and cluster launchers
-
-This is the first validation pass because it checks that the branch is coherent as shipped.
-
-If you want that validator to also rerun the full main-paper aggregation path, use:
+The compact package covers certified SDS references, duplicate-safe Base
+Best-of-64 evaluation, adaptive-repair controls, input-disjoint universal
+search, cost accounting, prompt sensitivity, JSSP, and bounded TSP evidence.
 
 ```bash
-./scripts/validate_paper_release.sh --run-main-regen
+python scripts/validate_neurips2026_public_evidence.py
+pytest -q tests/release/test_neurips2026_public_evidence.py
 ```
 
-That stronger check will rewrite the checked-in aggregate outputs, so it is best run from a clean worktree.
+These checks verify package membership, SHA-256 values, cross-file claim values,
+certified intervals, frozen solver hashes, and the absence of private publication
+material.
 
-### Clariden / cluster validation
-
-The following are not honestly MacBook validations:
-
-- `sbatch` / `srun` smoke tests for the SDS evaluation launchers
-- EDF environment selection
-- Capstor checkpoint and dataset path assumptions
-- full regeneration runs that depend on frozen result roots not present in the local checkout
-- any retraining or reevaluation using GH200 resources
-
-In other words:
-
-- the release branch can be structurally and functionally validated locally
-- the cluster launch path still needs at least one Clariden smoke pass before calling the whole public stack fully exercised
-
-## Canonical manifests
-
-- Main paper:
-  - `experiments/report_sets/paper_public_main_v1.json`
-- Appendix / supporting evidence:
-  - `experiments/report_sets/paper_public_appendix_v1.json`
-- Release mapping:
-  - `docs/release_manifest.md`
-- Artifact inventory:
-  - `docs/release_artifact_inventory.json`
-
-## Level 1: Verify the checked-in paper bundles
-
-This level does not require Hugging Face, W&B, or cluster access.
-
-Inspect the checked-in outputs:
-
-- SDS paper bundle:
-  - `evaluation/sds/aggregated_report_batches/paper_public_main_v1/`
-- BigCode paper bundle:
-  - `evaluation/bigcode/aggregated_report_batches/paper_public_main_v1/`
-- Fixed-code / runtime bundle:
-  - `evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/`
-
-Then compare those against the release snapshot note:
-
-- release snapshot note:
-  - `docs/NEURIPS_2026_CODE_RELEASE_SNAPSHOT.md`
-
-## Level 2: Rebuild the main paper bundles
-
-This level assumes you have synced the frozen evaluation roots listed in `experiments/report_sets/paper_public_main_v1.json` into the expected local locations.
+## Level 2: evaluator tests
 
 ```bash
-./scripts/generate_paper_results.sh
+./scripts/validate_paper_release.sh
 ```
 
-This regenerates:
+The release validator parses the manifests, checks the committed SDS and
+BigCode bundles, runs focused evaluator tests, and validates the compact evidence
+package. Optional dependencies may cause explicitly reported test skips.
 
-- SDS plots/tables into `evaluation/sds/aggregated_report_batches/paper_public_main_v1/`
-- BigCode table into `evaluation/bigcode/aggregated_report_batches/paper_public_main_v1/`
-- Universal-solver appendix aggregate if the referenced batch is present
+## Level 3: aggregate regeneration
 
-Important note:
-
-- the public branch ships the final aggregated paper bundles
-- it does **not** ship all large private/raw evaluation roots
-- those roots remain inventoried in `docs/release_artifact_inventory.json` and are intended to be published/synced in a dedicated artifact-publication pass
-- if those roots live only on Clariden or shared storage, this level should be treated as a cluster-backed validation rather than a pure local validation
-
-## Level 3: Validate appendix and supporting evidence
+The Git repository contains final compact outputs but does not duplicate every
+large generation or evaluation pool. Download the immutable revisions recorded
+in `docs/final_evidence_index.json`, place them at paths of your choice, and
+update a local copy of the report manifest to point to those roots.
 
 ```bash
-./scripts/generate_paper_appendix_results.sh
+./scripts/generate_paper_results.sh path/to/local_report_manifest.json
 ```
 
-This helper does two things:
+Do not change seed membership, joins, or selection rules. SDS joins use
+`(seed, uuid)`. Corrected TSP rows and post-result limitations must remain
+visible when regenerating reports.
 
-- validates the checked-in appendix/supporting summaries:
-  - soft-gate report
-  - reward-normalization summary
-  - feasibility-sparsity summaries
-  - timeout analysis report
-  - fixed-code baseline/runtime bundle
-- conditionally regenerates the SDS soft-gate aggregate if the required frozen result roots are present locally
+## Level 4: inference and training
 
-Supporting evidence currently lives in:
+The model-training stack is under `deps/open-r1/`; evaluation and aggregation
+code is under `evaluation/`. Repeating the complete study requires the published
+datasets and checkpoints, compatible accelerator hardware, and explicit local
+storage configuration. The release intentionally contains no scheduler account,
+private mount point, credential, or site-specific environment file.
 
-- `docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md`
-- `docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md`
-- `docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json`
-- `docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md`
-- `analysis/feasibility_sparsity/`
-- `docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md`
-- `evaluation/sds/aggregated_report_batches/20260326_baseline-eval-v1/`
+The public evidence should be treated as the frozen target for any repetition:
 
-## Level 4: Full retraining / reevaluation
+1. Preserve model and dataset revisions.
+2. Preserve seeds, prompts, selection budgets, and development/test separation.
+3. Freeze selected programs before opening test outcomes.
+4. Report adverse outcomes, unresolved bounds, and post-result corrections.
+5. Compare regenerated aggregates with the checksums and values in the evidence
+   index.
 
-This level is the full research stack:
+## Additional domains
 
-- cluster/container access
-- private datasets/checkpoints or regeneration from scratch
-- Hugging Face tokens
-- W&B credentials
+JSSP is a compile-once deployment evaluation using JSSP-trained policies. TSP
+is a bounded direct-from-base RL training test without an SFT stage. The TSP
+quality/stability gate failed, and native 2-opt and OR-Tools baselines remained
+stronger. See `docs/EVIDENCE_MAP.md` for the exact scope and limitations.
 
-The training/evaluation stack is split across:
+## Licensing
 
-- top-level launch scripts in `scripts/`
-- GRPO configs in `deps/open-r1/recipes/Qwen2.5-Coder-14B-Instruct/grpo/`
-- SDS evaluation scripts in `evaluation/sds/`
-- companion additional-domain artifacts inventoried in `docs/release_manifest.md`
-
-## Recommended validation order
-
-1. Run `./scripts/validate_paper_release.sh` locally.
-2. If the frozen SDS/BigCode roots are available locally, let that script run `./scripts/generate_paper_results.sh`; otherwise, sync those roots or switch to Clariden for that step.
-3. On Clariden, smoke-test the launchers that the public release depends on:
-   - `scripts/eval_capstor_sds_fixed_code.slurm`
-   - `scripts/eval_capstor_sds_pipeline.slurm`
-   - `scripts/evaluate_baseline_evidence.sh`
-4. Only after those pass should Level 4 retraining or full reruns be considered validated.
-
-## Additional-domain note: JSSP
-
-The paper includes JSSP evidence, and this release keeps the companion artifact identifiers explicit in `docs/release_artifact_inventory.json`.
+See `docs/LICENSING.md` before redistributing code, models, datasets, or standard
+benchmark files.

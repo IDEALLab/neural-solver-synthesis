@@ -1,9 +1,79 @@
 """Tests for SDS evaluation module."""
 
+import json
 from pathlib import Path
 
 import pandas as pd
 import pytest
+
+
+def test_parse_selected_ids_rejects_malformed_outputs():
+    from evaluation.sds.evaluate import parse_selected_ids
+
+    assert parse_selected_ids({"selection": {"variables": [0, 0, 2]}}, 3) == [0, 0, 2]
+    assert parse_selected_ids({"selection": {"variables": None}}, 3) is None
+    assert parse_selected_ids({"selection": []}, 3) is None
+    assert parse_selected_ids({"selection": {"variables": [3]}}, 3) is None
+    assert parse_selected_ids({"selection": {"variables": [True]}}, 3) is None
+    assert parse_selected_ids({"selection": {"variables": [{}]}}, 3) is None
+
+
+def test_build_dataset_records_forwards_revision(monkeypatch):
+    from evaluation.sds import evaluate  # noqa: PLC0415
+
+    captured = {}
+
+    def fake_load_dataset(name, *, split, revision):
+        captured.update(name=name, split=split, revision=revision)
+        return [{"uuid": "dev-1", "mission": {"n_variables": 2}}]
+
+    monkeypatch.setattr(evaluate, "load_dataset", fake_load_dataset)
+    records = evaluate.build_dataset_records(
+        "owner/dataset", split="test", revision="immutable-revision"
+    )
+
+    assert captured == {
+        "name": "owner/dataset",
+        "split": "test",
+        "revision": "immutable-revision",
+    }
+    assert json.loads(records[0]) == {
+        "uuid": "dev-1",
+        "mission": {"n_variables": 2},
+        "generated_text": "",
+    }
+
+
+def test_selection_audit_summary_separates_duplicates_and_failures():
+    from evaluation.sds.evaluate import summarize_selection_audit_rows
+
+    rows = [
+        {
+            "historical_feasible": True,
+            "audit_error_type": "none",
+            "duplicate_selection_count": 0,
+        },
+        {
+            "historical_feasible": True,
+            "audit_error_type": "none",
+            "duplicate_selection_count": 2,
+            "selection_contains_boolean_id": True,
+        },
+        {
+            "historical_feasible": False,
+            "audit_error_type": "runtime",
+            "duplicate_selection_count": 0,
+        },
+    ]
+    summary = summarize_selection_audit_rows(rows)
+    assert summary["row_count"] == 3
+    assert summary["historical_feasible_count"] == 2
+    assert summary["audit_feasible_count"] == 2
+    assert summary["records_with_duplicate_selections"] == 1
+    assert summary["historically_feasible_records_with_duplicate_selections"] == 1
+    assert summary["duplicate_id_occurrences"] == 2
+    assert summary["records_with_boolean_selection_ids"] == 1
+    assert summary["audit_error_type_counts"] == {"none": 2, "runtime": 1}
 
 
 def test_imports():
@@ -110,3 +180,6 @@ def test_calculate_true_score():
     score = calculate_true_score(inst, selected)
     expected = 40.0 + 50.0  # Only unary weights
     assert abs(score - expected) < 1e-6
+
+    # Duplicate IDs must not inflate the objective.
+    assert calculate_true_score(inst, [0, 0, 1, 1]) == 10.0 + 20.0 + 5.0

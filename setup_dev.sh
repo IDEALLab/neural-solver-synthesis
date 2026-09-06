@@ -59,12 +59,6 @@ cd deps/open-r1
 pip install -e . --no-deps
 cd ../..
 
-# Install the lightweight open-r1 parsing/eval dependencies that are required
-# by the public reward-function validation path, without pulling the full TRL /
-# training stack.
-echo "📦 Installing lightweight open-r1 reward-test dependencies..."
-pip install "latex2sympy2_extended>=1.0.6" "math-verify==0.5.2"
-
 # Install ShinkaEvolve as editable
 echo "📦 Installing ShinkaEvolve (editable)..."
 cd deps/ShinkaEvolve

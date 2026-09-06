@@ -115,6 +115,10 @@ class GRPOScriptArguments(trl.ScriptArguments):
             Language for code format reward.
     """
 
+    dataset_revision: Optional[str] = field(
+        default=None,
+        metadata={"help": "Immutable Hugging Face dataset revision."},
+    )
     reward_funcs: list[str] = field(
         default_factory=lambda: ["accuracy", "format", "tag_count"],
         metadata={

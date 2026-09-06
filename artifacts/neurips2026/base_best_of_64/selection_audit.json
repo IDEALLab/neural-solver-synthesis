@@ -1,0 +1,327 @@
+{
+  "affected_by_boolean_selection_ids": [],
+  "conditions": 6,
+  "expected_rows_per_condition_seed": 1000,
+  "interpretation": "Duplicate integer selections were independently re-executed with unique-ID scoring. Base Best-of-64 was affected; the other frozen methods were not.",
+  "protocol_id": "selection-type-audit-v1",
+  "requires_metric_rescore": false,
+  "rows": [
+    {
+      "audit_feasible_count": 753,
+      "condition": "base-best-of-64",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 36,
+      "error_type_counts": {
+        "constraint": 90,
+        "none": 753,
+        "runtime": 6,
+        "syntax": 146,
+        "timeout": 5
+      },
+      "evaluated_metrics_sha256": "9f78e0458dd04b2a945d98ce3b8055e13a650b6cd247f4da570e9339687f333f",
+      "historical_feasible_count": 848,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 11,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 770,
+      "condition": "base-best-of-64",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 106,
+      "error_type_counts": {
+        "constraint": 79,
+        "none": 770,
+        "runtime": 11,
+        "syntax": 135,
+        "timeout": 5
+      },
+      "evaluated_metrics_sha256": "bfd40b73fc2fcf12f5a3d14b9fc24ffc83b0ed9c63cbf71f52819f234b5f8af5",
+      "historical_feasible_count": 853,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 14,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 781,
+      "condition": "base-best-of-64",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 82,
+      "error_type_counts": {
+        "constraint": 97,
+        "none": 781,
+        "runtime": 9,
+        "syntax": 111,
+        "timeout": 2
+      },
+      "evaluated_metrics_sha256": "3321a4d508b69f91dc1149ce186273853b4480ca3f45dc06e2e56ab4d4024e17",
+      "historical_feasible_count": 878,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 13,
+      "row_count": 1000,
+      "seed": 303
+    },
+    {
+      "audit_feasible_count": 978,
+      "condition": "canonical-hero",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 978,
+        "timeout": 22
+      },
+      "evaluated_metrics_sha256": "380074e3f53ce04c5aecda138793828846fa1dd9a64ffd8785bb3ce36417b98c",
+      "historical_feasible_count": 978,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 980,
+      "condition": "canonical-hero",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 980,
+        "timeout": 20
+      },
+      "evaluated_metrics_sha256": "38cfdd84f987331b995f815897c718f9473297ba656ec68f1a672c96143b462f",
+      "historical_feasible_count": 980,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 977,
+      "condition": "canonical-hero",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 977,
+        "timeout": 23
+      },
+      "evaluated_metrics_sha256": "5faab29229d63dbbbcd41049ce00a36b2bd8da3f065884fe5887969d20d91ad8",
+      "historical_feasible_count": 977,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 303
+    },
+    {
+      "audit_feasible_count": 549,
+      "condition": "contemporary-control",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 432,
+        "none": 549,
+        "timeout": 19
+      },
+      "evaluated_metrics_sha256": "6fcfcdf2241da7b35689261d94606f9f640f89eff9a608b3679e10ca33665dfc",
+      "historical_feasible_count": 560,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 549,
+      "condition": "contemporary-control",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 429,
+        "none": 549,
+        "timeout": 22
+      },
+      "evaluated_metrics_sha256": "de2f87d5c2a14544c8898d0df3458ac0229caf4785e75d47f4540bba8da7da66",
+      "historical_feasible_count": 563,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 605,
+      "condition": "contemporary-control",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 380,
+        "none": 605,
+        "timeout": 15
+      },
+      "evaluated_metrics_sha256": "cd9eefe1502ae27e6f1b6370f3e263e27c0496325ac9927a22b437525d429574",
+      "historical_feasible_count": 605,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 303
+    },
+    {
+      "audit_feasible_count": 979,
+      "condition": "inference-without-hypothesize",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 979,
+        "timeout": 21
+      },
+      "evaluated_metrics_sha256": "cd8c4e6d144165b8d24720657b2dc801b8614283df8ca3e419910000b73ff1ed",
+      "historical_feasible_count": 978,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 980,
+      "condition": "inference-without-hypothesize",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 980,
+        "timeout": 20
+      },
+      "evaluated_metrics_sha256": "7c2e11f02d32243284913687be6b7e00f7314ea5fe1e05b0278ef9e405c50720",
+      "historical_feasible_count": 980,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 977,
+      "condition": "inference-without-hypothesize",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "none": 977,
+        "timeout": 23
+      },
+      "evaluated_metrics_sha256": "4e0b608a17a07698bf850a594b76068730f0f8243b576ebede4e472bba20e504",
+      "historical_feasible_count": 977,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 303
+    },
+    {
+      "audit_feasible_count": 908,
+      "condition": "shinka-evolve",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 61,
+        "json": 10,
+        "none": 908,
+        "runtime": 1,
+        "security": 20
+      },
+      "evaluated_metrics_sha256": "97ef8e28a2f21f839e9a9df6e23aafa3c43e9ff6494df82644a97f9e40a6e174",
+      "historical_feasible_count": 908,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 930,
+      "condition": "shinka-evolve",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 51,
+        "none": 930,
+        "runtime": 3,
+        "security": 10,
+        "timeout": 6
+      },
+      "evaluated_metrics_sha256": "208200e9dfa79ad9ce17f435973ed71ad5e2e7fdd902422756b237eea8505e25",
+      "historical_feasible_count": 930,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 910,
+      "condition": "shinka-evolve",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 36,
+        "json": 20,
+        "none": 910,
+        "runtime": 14,
+        "security": 20
+      },
+      "evaluated_metrics_sha256": "94d3dc2816d95dc0171066b1ad37fa4810b7e8699b0b5c500e587211ed8fd5b1",
+      "historical_feasible_count": 909,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 303
+    },
+    {
+      "audit_feasible_count": 577,
+      "condition": "training-without-hypothesize",
+      "dataset_revision": "d4b5eb76d5d2d0f80237854917ab27347eb31dde",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 406,
+        "none": 577,
+        "timeout": 17
+      },
+      "evaluated_metrics_sha256": "5a169a1b79d3c93e32f4ac994da14b0a4bafe1579d9623b93814ca61e2ecedfa",
+      "historical_feasible_count": 580,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 101
+    },
+    {
+      "audit_feasible_count": 581,
+      "condition": "training-without-hypothesize",
+      "dataset_revision": "c4cf5bb6fd163f7830c6f83b57e776df0b2fea64",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 399,
+        "none": 581,
+        "timeout": 20
+      },
+      "evaluated_metrics_sha256": "bcfd8f91289ef875f4d583c477ed6f5ea41752e24f914743a0128f009adf18e0",
+      "historical_feasible_count": 582,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 202
+    },
+    {
+      "audit_feasible_count": 610,
+      "condition": "training-without-hypothesize",
+      "dataset_revision": "fff4057d759f42e5d6284a0c6c08f0d2a6e8d10b",
+      "duplicate_id_occurrences": 0,
+      "error_type_counts": {
+        "constraint": 372,
+        "none": 610,
+        "timeout": 18
+      },
+      "evaluated_metrics_sha256": "04f5166e1f337f18aa282f3eadc3cb6253965ed197c456e5b2552b4e62ddf1e6",
+      "historical_feasible_count": 613,
+      "records_with_boolean_selection_ids": 0,
+      "records_with_duplicate_selections": 0,
+      "row_count": 1000,
+      "seed": 303
+    }
+  ],
+  "seeds": [
+    101,
+    202,
+    303
+  ]
+}

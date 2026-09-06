@@ -81,10 +81,10 @@ echo "✅ Checked-in SDS, BigCode, and baseline bundles are present."
 step "3/7 Shell and launcher syntax"
 bash -n scripts/generate_paper_results.sh
 bash -n scripts/generate_paper_appendix_results.sh
-bash -n scripts/evaluate_baseline_evidence.sh
-bash -n scripts/eval_capstor_sds_fixed_code.slurm
-bash -n scripts/eval_capstor_sds_pipeline.slurm
-bash -n scripts/train_capstor_unified_sds_qwen_coder.slurm
+python -m py_compile \
+    scripts/analyze_feasibility_sparsity.py \
+    scripts/generate_jssp_seed_averaged_robustness.py \
+    scripts/validate_neurips2026_public_evidence.py
 echo "✅ Local shell syntax checks passed."
 
 step "4/7 Top-level evaluation tests"
@@ -92,8 +92,10 @@ PYTHONPATH=deps/open-r1/src:deps/syndeopt/src pytest --import-mode=importlib \
     tests/evaluation/test_reward_functions.py \
     tests/evaluation/test_fixed_code_pipeline.py \
     tests/evaluation/test_sds_evaluate.py \
+    tests/evaluation/test_sds_scoring.py \
     tests/evaluation/test_aggregate_plots.py \
-    tests/evaluation/test_bigcode_aggregate.py
+    tests/evaluation/test_bigcode_aggregate.py \
+    tests/release/test_neurips2026_public_evidence.py
 
 step "5/7 Unified open-r1 tests"
 OPEN_R1_TESTS=(
@@ -110,10 +112,11 @@ fi
 PYTHONPATH=deps/open-r1/src:deps/syndeopt/src pytest --import-mode=importlib "${OPEN_R1_TESTS[@]}"
 
 step "6/7 Appendix/supporting evidence validation"
+python scripts/validate_neurips2026_public_evidence.py
 if [ -d docs/technical-reports ]; then
     bash ./scripts/generate_paper_appendix_results.sh "$APPENDIX_MANIFEST"
 else
-    warn "Skipping appendix/supporting evidence validation because docs/technical-reports is not included in this bundle."
+    warn "Skipping detailed report regeneration because docs/technical-reports is not included in this portable bundle."
 fi
 
 step "7/7 Main bundle regeneration eligibility"
@@ -183,7 +186,7 @@ fi
 step "Validation summary"
 echo "✅ Local structural checks passed."
 echo "✅ Local test suite passed for the promoted SDS, BigCode, and open-r1 code paths."
-echo "✅ Appendix/supporting evidence validation passed."
+echo "✅ Compact final-evidence checksums and claim mappings passed."
 if [[ ${#MISSING_ROOTS[@]} -eq 0 ]]; then
     if [[ "$RUN_MAIN_REGEN" -eq 1 ]]; then
         echo "✅ Main paper regeneration was executed locally."
@@ -193,4 +196,4 @@ if [[ ${#MISSING_ROOTS[@]} -eq 0 ]]; then
 else
     warn "Main paper regeneration remains pending on a machine that has the frozen result roots synced."
 fi
-warn "Cluster-only validation still remains for sbatch/srun launchers, EDF environments, and Capstor checkpoint-path assumptions."
+warn "Cluster-specific launcher and shared-storage validation remains outside this portable release."

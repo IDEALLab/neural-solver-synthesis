@@ -1,0 +1,143 @@
+{
+  "allocated_node_sensitivity": {
+    "classification": "scheduler-allocation sensitivity; active generation remains one GPU",
+    "frozen_hero_equation": "ceil((training allocated GPU-s + compile active seconds * allocated compile GPUs) / (Base-64 active seconds * allocated generation GPUs))",
+    "one_policy_frozen_hero_interval_instances": [
+      2766,
+      2863
+    ],
+    "one_policy_ordinary_hero_interval_instances": [
+      2810,
+      2900
+    ],
+    "ordinary_hero_equation": "ceil(training allocated GPU-s / ((Base-64 active seconds - Hero active seconds) * allocated generation GPUs))",
+    "per_seed_one_policy": [
+      {
+        "compile_allocated_gpus": 4,
+        "frozen_hero_break_even_instances": 2766,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 2810,
+        "seed": 101
+      },
+      {
+        "compile_allocated_gpus": 4,
+        "frozen_hero_break_even_instances": 2846,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 2885,
+        "seed": 202
+      },
+      {
+        "compile_allocated_gpus": 4,
+        "frozen_hero_break_even_instances": 2863,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 2900,
+        "seed": 303
+      }
+    ],
+    "three_seed_campaign_by_deployment_throughput": [
+      {
+        "deployment_throughput_seed": 101,
+        "frozen_hero_break_even_instances": 8294,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 8427
+      },
+      {
+        "deployment_throughput_seed": 202,
+        "frozen_hero_break_even_instances": 8539,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 8654
+      },
+      {
+        "deployment_throughput_seed": 303,
+        "frozen_hero_break_even_instances": 8591,
+        "generation_allocated_gpus": 4,
+        "ordinary_hero_break_even_instances": 8701
+      }
+    ],
+    "three_seed_campaign_frozen_hero_interval_instances": [
+      8294,
+      8591
+    ],
+    "three_seed_campaign_ordinary_hero_interval_instances": [
+      8427,
+      8701
+    ]
+  },
+  "frozen_hero_equation": "ceil((training allocated GPU-s + 64-completion validation synthesis GPU-s) / Base-64 generation GPU-s per instance)",
+  "one_policy_frozen_hero_interval_instances": [
+    11044,
+    11433
+  ],
+  "one_policy_ordinary_hero_interval_instances": [
+    11239,
+    11598
+  ],
+  "ordinary_hero_equation": "ceil(training allocated GPU-s / (Base-64 generation GPU-s per instance - Hero generation GPU-s per instance))",
+  "per_seed_one_policy": [
+    {
+      "base64_generation_gpu_seconds_per_instance": 15.685970293045044,
+      "frozen_compile_generation_gpu_seconds": 92.4527096748352,
+      "frozen_compile_upfront_gpu_seconds": 173228.45270967484,
+      "frozen_hero_break_even_instances": 11044,
+      "hero_generation_gpu_seconds_per_instance": 0.2809797282218933,
+      "ordinary_hero_break_even_instances": 11239,
+      "ordinary_hero_marginal_gpu_seconds_saved_per_instance": 15.40499056482315,
+      "seed": 101,
+      "training_allocated_gpu_seconds": 173136.0
+    },
+    {
+      "base64_generation_gpu_seconds_per_instance": 15.235472609758377,
+      "frozen_compile_generation_gpu_seconds": 89.05846309661865,
+      "frozen_compile_upfront_gpu_seconds": 173165.05846309662,
+      "frozen_hero_break_even_instances": 11366,
+      "hero_generation_gpu_seconds_per_instance": 0.23385348606109618,
+      "ordinary_hero_break_even_instances": 11538,
+      "ordinary_hero_marginal_gpu_seconds_saved_per_instance": 15.00161912369728,
+      "seed": 202,
+      "training_allocated_gpu_seconds": 173076.0
+    },
+    {
+      "base64_generation_gpu_seconds_per_instance": 15.14349459218979,
+      "frozen_compile_generation_gpu_seconds": 89.61120462417603,
+      "frozen_compile_upfront_gpu_seconds": 173129.61120462418,
+      "frozen_hero_break_even_instances": 11433,
+      "hero_generation_gpu_seconds_per_instance": 0.2230732262134552,
+      "ordinary_hero_break_even_instances": 11598,
+      "ordinary_hero_marginal_gpu_seconds_saved_per_instance": 14.920421365976335,
+      "seed": 303,
+      "training_allocated_gpu_seconds": 173040.0
+    }
+  ],
+  "three_seed_campaign_by_deployment_throughput": [
+    {
+      "deployment_throughput_seed": 101,
+      "frozen_hero_break_even_instances": 33121,
+      "ordinary_hero_break_even_instances": 33707
+    },
+    {
+      "deployment_throughput_seed": 202,
+      "frozen_hero_break_even_instances": 34100,
+      "ordinary_hero_break_even_instances": 34614
+    },
+    {
+      "deployment_throughput_seed": 303,
+      "frozen_hero_break_even_instances": 34307,
+      "ordinary_hero_break_even_instances": 34802
+    }
+  ],
+  "three_seed_campaign_compile_generation_gpu_seconds": 271.1223773956299,
+  "three_seed_campaign_frozen_hero_interval_instances": [
+    33121,
+    34307
+  ],
+  "three_seed_campaign_ordinary_hero_interval_instances": [
+    33707,
+    34802
+  ],
+  "three_seed_campaign_training_allocated_gpu_seconds": 519252.0,
+  "unit_policy": [
+    "CPU execution seconds are not added to GPU seconds.",
+    "Slurm allocation and active one-GPU generation are reported separately.",
+    "No monetary conversion is made without an explicit hardware price ratio."
+  ]
+}

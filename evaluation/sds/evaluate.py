@@ -1,10 +1,12 @@
 import argparse
 import contextlib
+import hashlib
 import json
 import os
 import re
 import sys
 import time
+from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
@@ -31,6 +33,7 @@ try:
         mission_to_instance,
         run_candidate,
     )
+
 except ImportError:
     sys.path.append(str(Path(__file__).resolve().parent))
     from utils import (
@@ -39,6 +42,11 @@ except ImportError:
         mission_to_instance,
         run_candidate,
     )
+
+try:
+    from scoring import calculate_true_score
+except ImportError:
+    from evaluation.sds.scoring import calculate_true_score
 
 from syndeopt.core.feasibility import feasible
 from syndeopt.core.scoring import score
@@ -91,43 +99,33 @@ AVAILABLE_SOLVERS = {
 
 DEFAULT_FIXED_CODE_METHOD_NAME = "Fixed Code"
 DEFAULT_FIXED_CODE_LABEL = "fixed-code"
+DATASETS_REQUIRED_MESSAGE = (
+    "datasets library not available. Install with: pip install datasets"
+)
 
 
-def calculate_true_score(instance, selected_ids):
-    if not selected_ids:
-        return 0.0
-    score = sum(instance.w[i] for i in selected_ids)
-    sel_set = set(selected_ids)
-    for (i, j), weight in instance.W.items():
-        if i in sel_set and j in sel_set:
-            score += weight
-    return score
-
-
-def build_dataset_records(dataset_name: str, split: str = "test") -> list[str]:
+def build_dataset_records(
+    dataset_name: str, split: str = "test", revision: str | None = None
+) -> list[str]:
     """Load an SDS dataset split and convert it into evaluator input records."""
     if not HAS_DATASETS:
-        raise ImportError(
-            "datasets library not available. Install with: pip install datasets"
-        )
+        raise ImportError(DATASETS_REQUIRED_MESSAGE)
 
     try:
-        dataset = load_dataset(dataset_name, split=split)
+        dataset = load_dataset(dataset_name, split=split, revision=revision)
     except Exception as e:
         raise DatasetLoadError(dataset_name, e) from e
 
-    records = []
-    for item in dataset:
-        records.append(
-            json.dumps(
-                {
-                    "uuid": item.get("uuid"),
-                    "mission": item.get("mission"),
-                    "generated_text": "",
-                }
-            )
+    return [
+        json.dumps(
+            {
+                "uuid": item.get("uuid"),
+                "mission": item.get("mission"),
+                "generated_text": "",
+            }
         )
-    return records
+        for item in dataset
+    ]
 
 
 def sanitize_label(value: str | None, default: str) -> str:
@@ -326,6 +324,24 @@ def robust_execution(code, stdin_obj, n_repeats=3):
     return res
 
 
+def parse_selected_ids(execution_result, n_variables):
+    """Return a valid list-shaped binary selection, or None for malformed output."""
+    selection = execution_result.get("selection")
+    if not isinstance(selection, dict):
+        return None
+    selected_ids = selection.get("variables")
+    if not isinstance(selected_ids, list):
+        return None
+    if not all(
+        isinstance(index, int)
+        and not isinstance(index, bool)
+        and 0 <= index < n_variables
+        for index in selected_ids
+    ):
+        return None
+    return selected_ids
+
+
 # --- WORKER FUNCTION FOR PARALLELIZATION ---
 def evaluate_single_sample(  # noqa: PLR0912, PLR0913, PLR0915
     line,
@@ -431,6 +447,9 @@ def evaluate_single_sample(  # noqa: PLR0912, PLR0913, PLR0915
     exec_time = 0.0
     violation_data = {}
     code_snippet = ""
+    selected_count_raw = 0
+    selected_count_unique = 0
+    selection_contains_boolean_id = False
 
     # Create mission summary string
     mission_summary = f"n_vars={mission_dict.get('n_variables', '?')}, "
@@ -486,23 +505,43 @@ def evaluate_single_sample(  # noqa: PLR0912, PLR0913, PLR0915
         error_type = exec_res.get("error_type", "unknown")
 
         if "selection" in exec_res:
-            sel = exec_res["selection"].get("variables", [])
-            violations = check_constraint_violations(inst, sel)
+            raw_selection = exec_res.get("selection")
+            raw_selected_ids = (
+                raw_selection.get("variables")
+                if isinstance(raw_selection, dict)
+                else None
+            )
+            if isinstance(raw_selected_ids, list):
+                selected_count_raw = len(raw_selected_ids)
+                selection_contains_boolean_id = any(
+                    isinstance(index, bool) for index in raw_selected_ids
+                )
+            sel = parse_selected_ids(exec_res, inst.n)
+            if sel is None:
+                error_type = "invalid_selection"
+                sel = []
+            selected_count_unique = len(set(sel))
+            violations = (
+                check_constraint_violations(inst, sel)
+                if error_type != "invalid_selection"
+                else {"all_valid": False}
+            )
 
             # Flatten violation details
-            violation_data = {
-                "viol_cardinality": 1 if violations["cardinality"] else 0,
-                "viol_precedence": len(violations["precedence"]),
-                "viol_mutex": len(violations["mutex"]),
-                "viol_groups": len(violations["groups"]),
-            }
+            if error_type != "invalid_selection":
+                violation_data = {
+                    "viol_cardinality": 1 if violations["cardinality"] else 0,
+                    "viol_precedence": len(violations["precedence"]),
+                    "viol_mutex": len(violations["mutex"]),
+                    "viol_groups": len(violations["groups"]),
+                }
 
             if violations["all_valid"]:
                 # [FIX] Preserve negative scores
                 llm_score = calculate_true_score(inst, sel)
                 is_llm_feasible = True
                 error_type = "none"
-            else:
+            elif error_type != "invalid_selection":
                 error_type = "constraint"
 
     if is_llm_feasible:
@@ -520,6 +559,14 @@ def evaluate_single_sample(  # noqa: PLR0912, PLR0913, PLR0915
             "code_snippet": code_snippet,  # Capture full code for W&B
             "reasoning": reasoning_snippet,  # Capture reasoning trace for W&B
             "mission_summary": mission_summary,  # Problem definition summary
+            "selected_count_raw": selected_count_raw,
+            "selected_count_unique": selected_count_unique,
+            "duplicate_selection_count": (
+                selected_count_raw - selected_count_unique
+                if error_type != "invalid_selection"
+                else 0
+            ),
+            "selection_contains_boolean_id": selection_contains_boolean_id,
             **violation_data,
         }
     )
@@ -540,6 +587,125 @@ def evaluate_single_sample(  # noqa: PLR0912, PLR0913, PLR0915
         row["ratio_vbs"] = 0.0
 
     return row
+
+
+def audit_existing_metrics_row(payload):
+    """Re-execute one stored program and retain only selection-shape evidence."""
+    line, index, code, seed, historical_feasible = payload
+    result = evaluate_single_sample(
+        line,
+        index,
+        {},
+        0.0,
+        1,
+        seed,
+        fixed_code=code,
+    )
+    return {
+        "uuid": result["uuid"],
+        "historical_feasible": bool(historical_feasible),
+        "audit_error_type": result["error_type"],
+        "selected_count_raw": int(result["selected_count_raw"]),
+        "selected_count_unique": int(result["selected_count_unique"]),
+        "duplicate_selection_count": int(result["duplicate_selection_count"]),
+        "selection_contains_boolean_id": bool(
+            result.get("selection_contains_boolean_id", False)
+        ),
+        "code_sha256": hashlib.sha256(code.encode("utf-8")).hexdigest(),
+    }
+
+
+def summarize_selection_audit_rows(rows: list[dict]) -> dict:
+    """Summarize duplicate selections without changing historical scores."""
+    return {
+        "row_count": len(rows),
+        "historical_feasible_count": sum(
+            bool(row["historical_feasible"]) for row in rows
+        ),
+        "audit_feasible_count": sum(
+            row["audit_error_type"] == "none" for row in rows
+        ),
+        "records_with_duplicate_selections": sum(
+            int(row["duplicate_selection_count"]) > 0 for row in rows
+        ),
+        "historically_feasible_records_with_duplicate_selections": sum(
+            bool(row["historical_feasible"])
+            and int(row["duplicate_selection_count"]) > 0
+            for row in rows
+        ),
+        "duplicate_id_occurrences": sum(
+            int(row["duplicate_selection_count"]) for row in rows
+        ),
+        "records_with_boolean_selection_ids": sum(
+            bool(row.get("selection_contains_boolean_id", False)) for row in rows
+        ),
+        "audit_error_type_counts": dict(
+            sorted(Counter(str(row["audit_error_type"]) for row in rows).items())
+        ),
+    }
+
+
+def audit_existing_metrics_selections(
+    *,
+    metrics_path: Path,
+    dataset_name: str,
+    dataset_revision: str | None,
+    seed: int,
+    workers: int,
+    output_dir: Path,
+) -> None:
+    """Audit stored per-instance programs for repeated selected IDs only."""
+    if output_dir.exists():
+        raise FileExistsError(f"refusing to reuse selection-audit output: {output_dir}")
+    metrics = pd.read_csv(metrics_path)
+    required = {"uuid", "code_snippet", "feasible"}
+    missing = required - set(metrics.columns)
+    if missing:
+        raise ValueError(f"selection-audit metrics missing columns: {sorted(missing)}")
+    if metrics["uuid"].duplicated().any():
+        raise ValueError("selection-audit metrics contain duplicate UUIDs")
+
+    dataset_records = build_dataset_records(
+        dataset_name, split="test", revision=dataset_revision
+    )
+    by_uuid = {
+        str(json.loads(line)["uuid"]): line
+        for line in dataset_records
+    }
+    metric_uuids = {str(uuid) for uuid in metrics["uuid"]}
+    if set(by_uuid) != metric_uuids:
+        raise ValueError("selection-audit dataset/metrics UUID sets differ")
+
+    payloads = []
+    for index, row in metrics.sort_values("uuid").reset_index(drop=True).iterrows():
+        code = "" if pd.isna(row["code_snippet"]) else str(row["code_snippet"])
+        uuid = str(row["uuid"])
+        payloads.append((by_uuid[uuid], index, code, seed, bool(row["feasible"])))
+
+    audit_rows = []
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(audit_existing_metrics_row, item) for item in payloads]
+        for future in as_completed(futures):
+            audit_rows.append(future.result())
+    audit_rows.sort(key=lambda row: str(row["uuid"]))
+    if len(audit_rows) != len(metrics):
+        raise RuntimeError("selection-audit row count mismatch")
+
+    output_dir.mkdir(parents=True)
+    pd.DataFrame(audit_rows).to_csv(output_dir / "selection_audit_rows.csv", index=False)
+    summary = {
+        "status": "validated",
+        "mode": "audit-only; historical metrics are not replaced",
+        "metrics_path": str(metrics_path),
+        "metrics_sha256": hashlib.sha256(metrics_path.read_bytes()).hexdigest(),
+        "dataset": dataset_name,
+        "dataset_revision": dataset_revision,
+        "seed": seed,
+        **summarize_selection_audit_rows(audit_rows),
+    }
+    (output_dir / "selection_audit_summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    )
 
 
 def load_shinka_dataset(  # noqa: PLR0912, PLR0913, PLR0915
@@ -1200,7 +1366,7 @@ def log_to_wandb(  # noqa: PLR0912, PLR0913, PLR0915
 
     # Get project and entity from environment (same as training)
     project = os.environ.get("WANDB_PROJECT", "qwen-coder-sds-rl")
-    entity = os.environ.get("WANDB_ENTITY", "smassoudi-eth-z-rich")
+    entity = os.environ.get("WANDB_ENTITY", "neural-solver-synthesis")
     batch_id = os.environ.get("BATCH_ID", None)
 
     print("\n📊 Logging evaluation results to W&B...")
@@ -1435,6 +1601,12 @@ Examples:
         help="HuggingFace SDS dataset to evaluate. In fixed-code mode, loads the test split directly.",
     )
     parser.add_argument(
+        "--dataset-revision",
+        type=str,
+        default=None,
+        help="Optional immutable Hugging Face dataset revision.",
+    )
+    parser.add_argument(
         "--shinka-dataset",
         type=str,
         default=None,
@@ -1561,11 +1733,38 @@ Examples:
         default=None,
         help="Seed associated with the fixed code source, if applicable.",
     )
+    parser.add_argument(
+        "--audit-existing-metrics",
+        type=Path,
+        default=None,
+        help="Audit code_snippet outputs in an existing metrics CSV for repeated selected IDs.",
+    )
+    parser.add_argument(
+        "--audit-output-dir",
+        type=Path,
+        default=None,
+        help="Fresh output directory for --audit-existing-metrics evidence.",
+    )
     args = parser.parse_args()
 
     # Normalize training scheme (handle both hyphen and underscore)
     if args.training_scheme:
         args.training_scheme = args.training_scheme.replace("_", "-")
+
+    if args.audit_existing_metrics:
+        if not args.dataset or not args.audit_output_dir:
+            parser.error(
+                "--audit-existing-metrics requires --dataset and --audit-output-dir"
+            )
+        audit_existing_metrics_selections(
+            metrics_path=args.audit_existing_metrics,
+            dataset_name=args.dataset,
+            dataset_revision=args.dataset_revision,
+            seed=args.seed,
+            workers=args.workers,
+            output_dir=args.audit_output_dir,
+        )
+        return
 
     if args.fixed_code_file:
         if not args.training_scheme:
@@ -1671,6 +1870,7 @@ Examples:
         "shinka_dataset": args.shinka_dataset,
         "evaluate_on_own_dataset": args.evaluate_on_own_dataset,
         "dataset": args.dataset,
+        "dataset_revision": args.dataset_revision,
         "fixed_code_file": args.fixed_code_file,
         "code_source_type": args.code_source_type,
         "code_source_path": args.code_source_path,
@@ -1785,7 +1985,9 @@ Examples:
 
         if args.fixed_code_file and args.dataset:
             print(f"📥 Loading fixed-code dataset: {args.dataset} (split=test)")
-            lines = build_dataset_records(args.dataset, split="test")
+            lines = build_dataset_records(
+                args.dataset, split="test", revision=args.dataset_revision
+            )
         else:
             with Path(args.input_file).open() as f:
                 lines = [line for line in f if line.strip()]
@@ -1867,6 +2069,44 @@ Examples:
         # --- OUTPUT GENERATION ---
         evaluation_data = pd.DataFrame(results)
         evaluation_wall_clock_seconds = time.time() - evaluation_start_time
+
+        duplicate_rows = evaluation_data[
+            evaluation_data.get("duplicate_selection_count", 0) > 0
+        ].copy()
+        duplicate_columns = [
+            column
+            for column in (
+                "uuid",
+                "selected_count_raw",
+                "selected_count_unique",
+                "duplicate_selection_count",
+                "feasible",
+                "llm_score",
+                "code_snippet",
+            )
+            if column in duplicate_rows.columns
+        ]
+        duplicate_rows[duplicate_columns].to_csv(
+            Path(args.output_dir) / "duplicate_selection_audit.csv", index=False
+        )
+        duplicate_audit = {
+            "evaluated_record_count": len(evaluation_data),
+            "records_with_duplicate_selections": len(duplicate_rows),
+            "uuids_with_duplicate_selections": (
+                int(duplicate_rows["uuid"].nunique())
+                if "uuid" in duplicate_rows.columns
+                else 0
+            ),
+            "duplicate_id_occurrences": int(
+                duplicate_rows.get("duplicate_selection_count", pd.Series(dtype=int)).sum()
+            ),
+            "invalid_selection_records": int(
+                (evaluation_data.get("error_type") == "invalid_selection").sum()
+            ),
+        }
+        (Path(args.output_dir) / "duplicate_selection_audit.json").write_text(
+            json.dumps(duplicate_audit, indent=2, sort_keys=True) + "\n"
+        )
 
         # [NEW] BEST-OF-N ANALYSIS: Check for multiple samples per UUID
         if args.best_of_n and "uuid" in evaluation_data.columns:

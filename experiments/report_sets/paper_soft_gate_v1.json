@@ -1,6 +1,6 @@
 {
   "name": "paper_soft_gate_v1",
-  "description": "SDS-only soft-gate ablation manifest for the matched nominal-gate study.",
+  "description": "SDS-only soft-gate ablation manifest for the nominal-gate sensitivity study.",
   "notes": "Tracks the frozen SDS comparison batch for the soft-gate ablation without changing the paper's main manifest. Add checkpoints and W&B run IDs after the batch is frozen.",
   "sds": {
     "result_roots": [

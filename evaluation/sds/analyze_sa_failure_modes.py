@@ -60,21 +60,50 @@ def detect_algorithm(code):
     if has_temp and has_cooling and has_exp:
         result["is_sa"] = True
 
-    has_sort_weight = "sort" in clean and "weight" in clean
-    has_greedy_kw = "greedy" in clean
-    if (has_sort_weight or has_greedy_kw) and not result["is_sa"]:
-        result["is_greedy"] = True
-
-    has_neighbor = "neighbor" in clean or "neighbour" in clean
-    has_moves = any(x in clean for x in ["flip", "swap", "climb", "hill"])
-    if (has_neighbor or has_moves) and not result["is_sa"]:
-        result["is_local_search"] = True
-
     has_recursion = "def" in clean and re.search(
         r"def\s+(\w+).*?\1\(", clean, re.DOTALL
     )
     if "backtrack" in clean or (has_recursion and "dfs" in clean):
         result["is_backtracking"] = True
+
+    has_neighbor_name = "neighbor" in clean or "neighbour" in clean
+    has_move_name = any(x in clean for x in ["flip", "swap", "climb", "hill"])
+    has_iteration = bool(re.search(r"\b(?:for|while)\b", clean))
+    has_candidate_copy = bool(
+        re.search(r"\b\w+\s*=\s*\w+\s*\[\s*:\s*\]", clean)
+        or re.search(r"\b\w+\s*=\s*\w+\.copy\s*\(", clean)
+        or re.search(r"\b\w+\s*=\s*list\s*\(\s*\w+\s*\)", clean)
+    )
+    has_mutation = any(
+        token in clean
+        for token in [".append(", ".remove(", ".pop(", ".add(", ".discard("]
+    )
+    has_objective_comparison = bool(
+        re.search(
+            r"if\s+[^\n]*(?:score|value|objective|cost|fitness)[^\n]*(?:>|<)",
+            clean,
+        )
+    )
+    structural_local_search = (
+        has_iteration
+        and has_mutation
+        and has_objective_comparison
+        and has_candidate_copy
+    )
+    if (
+        has_neighbor_name or has_move_name or structural_local_search
+    ) and not result["is_sa"] and not result["is_backtracking"]:
+        result["is_local_search"] = True
+
+    has_sort_weight = "sort" in clean and "weight" in clean
+    has_greedy_kw = "greedy" in clean
+    if (
+        (has_sort_weight or has_greedy_kw)
+        and not result["is_sa"]
+        and not result["is_local_search"]
+        and not result["is_backtracking"]
+    ):
+        result["is_greedy"] = True
 
     if (
         "random" in clean

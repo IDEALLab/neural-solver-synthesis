@@ -253,7 +253,7 @@ def fetch_wandb_table(  # noqa: PLR0911, PLR0912, PLR0915
 
         # Defaults
         if not entity:
-            entity = os.environ.get("WANDB_ENTITY", "smassoudi-eth-z-rich")
+            entity = os.environ.get("WANDB_ENTITY", "neural-solver-synthesis")
 
         # CRITICAL: Always check 'qwen-coder-sds-rl' for legacy runs, regardless of env var
         projects_to_try = []
@@ -891,7 +891,7 @@ Examples:
         "--wandb-entity",
         type=str,
         default=None,
-        help="W&B entity (default: from env or 'smassoudi-eth-z-rich')",
+        help="W&B entity (default: from env or 'neural-solver-synthesis')",
     )
 
     args = parser.parse_args()

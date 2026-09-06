@@ -14,14 +14,12 @@
     },
     "soft_gate": {
       "report_set": "experiments/report_sets/paper_soft_gate_v1.json",
-      "report": "docs/technical-reports/SOFT_GATE_ABLATION_REPORT.md"
+      "status": "regenerable_when_the_frozen_result_root_is_available"
     },
     "reward_normalization": {
-      "report": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_REPORT.md",
-      "summary": "docs/technical-reports/REWARD_NORMALIZATION_ABLATION_SUMMARY.json"
+      "status": "reported_in_the_manuscript_and_external_artifact_record"
     },
     "feasibility_sparsity": {
-      "report": "docs/technical-reports/FEASIBILITY_SPARSITY_REPORT.md",
       "summary_dir": "analysis/feasibility_sparsity/",
       "summary_files": [
         "summary.json",
@@ -31,11 +29,19 @@
       ]
     },
     "timeouts": {
-      "report": "docs/technical-reports/TIMEOUT_FAILURE_ANALYSIS_REPORT.md"
+      "status": "reported_in_checked_in_aggregate_bundles"
     },
     "additional_domain_jssp": {
       "inventory_entry": "docs/release_artifact_inventory.json#additional_domains.jssp",
-      "status": "tracked_as_external_artifact"
+      "summary": "artifacts/neurips2026/jssp/summary.json"
+    },
+    "additional_domain_tsp": {
+      "inventory_entry": "docs/release_artifact_inventory.json#additional_domains.tsp",
+      "summary": "artifacts/neurips2026/tsp/summary.json"
+    },
+    "final_evidence": {
+      "index": "docs/final_evidence_index.json",
+      "package": "artifacts/neurips2026/"
     }
   }
 }
