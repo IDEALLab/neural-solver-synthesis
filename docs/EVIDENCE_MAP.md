@@ -14,6 +14,24 @@ counts, checksums, and immutable remote revisions are recorded in
 The W&B report is an aggregated visualization surface. The checksum-verified
 files in GitHub and Hugging Face remain the canonical result store.
 
+## Policy Checkpoints
+
+The six newly released checkpoints contain inference files only. Each model
+repository includes `files.sha256.json`; all listed files and repository cards
+were verified through anonymous downloads at the immutable revisions below.
+
+| Condition | Seed | Immutable Hugging Face revision |
+| --- | ---: | --- |
+| TSP RL policy | 101 | [`3241ef5e`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed101/tree/3241ef5e1de219b083283324481d6bc604b6227a) |
+| TSP RL policy | 202 | [`0290cbfb`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed202/tree/0290cbfb7e9bf45239711cf8885c326272b9dbb7) |
+| TSP RL policy | 303 | [`1c1b2c23`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed303/tree/1c1b2c23c6ed277d5f6fd75522d840dc09b15450) |
+| SDS without `Hypothesize`, step 90 | 101 | [`1271c838`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed101/tree/1271c838d73f9f919df66fbf1ba87068204fad9d) |
+| SDS without `Hypothesize`, step 90 | 202 | [`c914264f`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed202/tree/c914264f1193a246b98e2211c884b32f68ecde68) |
+| SDS without `Hypothesize`, step 90 | 303 | [`c06552a0`](https://huggingface.co/IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed303/tree/c06552a00c43a2e53f54c4029dc2d65f3ce3ea92) |
+
+They are also appended to the public
+[Neural Solver Synthesis collection](https://huggingface.co/collections/IDEALLab/neural-solver-synthesis-698b3e0434677fd2d2f5b3cf).
+
 ## SDS
 
 The certified SDS package reports exact optima where proved, explicit intervals

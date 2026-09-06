@@ -44,12 +44,20 @@ metadata:
   `IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1@c34da924fbb4f0645e24b6061678bc206dd630a0`
 - W&B report:
   `https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==`
+- Public model collection:
+  `https://huggingface.co/collections/IDEALLab/neural-solver-synthesis-698b3e0434677fd2d2f5b3cf`
 
 The package contains the final SDS, adaptive-repair, cost, universal-search,
 prompt-sensitivity, JSSP, and TSP summaries. TSP trial rows and available frozen
 solver programs are included. The same-model adaptive-repair programs remain
 identified by immutable SHA-256 values because their historical source files
 were unavailable in the compact publication workspace.
+
+The three TSP RL checkpoints and three step-90 SDS checkpoints trained without
+the `Hypothesize` instruction are public at immutable revisions listed in
+`docs/EVIDENCE_MAP.md` and `docs/release_artifact_inventory.json`. Each contains
+only inference files, an English model card, and a SHA-256 manifest; optimizer,
+scheduler, RNG, and trainer state are excluded.
 
 ## Paper bundles
 
