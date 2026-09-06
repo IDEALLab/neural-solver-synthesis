@@ -2,13 +2,13 @@
   "claims": [
     {
       "claim_id": "sds-hero-certified",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/sds/certified_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "The task contract, simulator, prompt, and reward scaffold remain domain-specific.",
       "manuscript_location": "Main results and certified evaluation",
       "metric_definition": "Seed-macro feasible-row pass rate and certified-optimum gap on the content-clean SDS test subset",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/sds/certified_summary.json",
       "public_result_sha256": "0783bdf61e499ac30f0d15ef2acec09ddb5b89a246050eff3ce0e7c1118e88bc",
       "reported_value": {
@@ -24,18 +24,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Certified SDS comparisons",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#certified-sds-comparisons"
     },
     {
       "claim_id": "sds-base-best-of-64",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/base_best_of_64/selection_audit.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Existing immutable generations were rescored; no samples were regenerated.",
       "manuscript_location": "Main results and scoring-integrity discussion",
       "metric_definition": "Duplicate-safe seed-macro feasible-row pass rate and certified-optimum gap",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/base_best_of_64/selection_audit.json",
       "public_result_sha256": "742de5905c6685acfa0c6e6a68c5c704a4baaa33b25057771e636a4e9faaa03f",
       "reported_value": {
@@ -50,18 +50,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Certified SDS comparisons",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#certified-sds-comparisons"
     },
     {
       "claim_id": "sds-same-model-adaptive-repair",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/adaptive_repair/same_model_protocol_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Matched backbone and completion count do not imply a proof that RL is uniquely necessary.",
       "manuscript_location": "Adaptive repair control",
       "metric_definition": "Seed-macro feasible-row pass rate and certified-optimum gap after 64 execution-feedback completions",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/adaptive_repair/same_model_protocol_summary.json",
       "public_result_sha256": "4490db11e7ce4dadaa608221ce7ae86f3af0af421b86b49080b754c56744336e",
       "reported_value": {
@@ -76,18 +76,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Certified SDS comparisons",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#certified-sds-comparisons"
     },
     {
       "claim_id": "sds-hosted-adaptive-repair",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/adaptive_repair/hosted_protocol_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Not token-, dollar-, latency-, or training-compute-matched; the final allocation was chosen after an earlier truncated run.",
       "manuscript_location": "Hosted reasoning-model control",
       "metric_definition": "Seed-macro feasible-row pass rate and certified-optimum gap after 64 medium-reasoning execution-feedback completions",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/adaptive_repair/hosted_protocol_summary.json",
       "public_result_sha256": "ddbba8e11672babb30c4084ef91c88e0466abd747a7ef81cec27152c5f695fa4",
       "reported_value": {
@@ -102,18 +102,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Certified SDS comparisons",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#certified-sds-comparisons"
     },
     {
       "claim_id": "sds-input-disjoint-universal-search",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/universal_search/protocol_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "The historical test-selected tournament is excluded from confirmatory evidence.",
       "manuscript_location": "Input-disjoint universal search control",
       "metric_definition": "Seed-macro feasible-row pass rate and certified-optimum gap for a development-selected program from a 191,699-code pool",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/universal_search/protocol_summary.json",
       "public_result_sha256": "8a3682185308ebc8e7c7a56244455270684121f054cbd1e45f4a9dd5866da158",
       "reported_value": {
@@ -128,18 +128,18 @@
         "unique_programs": 191699
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Certified SDS comparisons",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#certified-sds-comparisons"
     },
     {
       "claim_id": "sds-amortization-boundary",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/cost/cost_break_even.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "CPU and GPU time are reported separately; no monetary conversion is made without an explicit hardware-price ratio.",
       "manuscript_location": "End-to-end cost and break-even accounting",
       "metric_definition": "Deployment instances required to amortize measured training allocation against Base Best-of-64 generation",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/cost/cost_break_even.json",
       "public_result_sha256": "7a961ceef5c63f8aab85c1deb393295643e46eb656fa0523f3b3239f54c1cc8b",
       "reported_value": {
@@ -164,18 +164,18 @@
         "training_seeds": 3
       },
       "uncertainty_definition": "Range over measured per-seed deployment throughput",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "End-to-end amortization boundary",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#end-to-end-amortization-boundary"
     },
     {
       "claim_id": "hypothesize-inference-time",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/hypothesize/inference_time_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "This intervention isolates deployment-time wording and does not test training-time dependence.",
       "manuscript_location": "Prompt-mechanism analysis",
       "metric_definition": "Frozen-policy inference with exactly the Hypothesize line removed",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/hypothesize/inference_time_summary.json",
       "public_result_sha256": "7fd9815b918e647ae6d44357299731c8ee4e1da6b3ccdf7334ca1dcd9e31599f",
       "reported_value": {
@@ -193,18 +193,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Hypothesize sensitivity",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#hypothesize-sensitivity"
     },
     {
       "claim_id": "hypothesize-training-step90",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/hypothesize/training_step90_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Only one prompt line is tested; strong seed heterogeneity and later non-monotonic recovery limit causal scope.",
       "manuscript_location": "Prompt-mechanism analysis",
       "metric_definition": "Matched historical training with exactly the Hypothesize line removed, evaluated at step 90",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/hypothesize/training_step90_summary.json",
       "public_result_sha256": "679d9b2d6a99a1b4ac07db239f0b59d3888284af946c1a0890409729f9e5584e",
       "reported_value": {
@@ -222,18 +222,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds; paired bootstrap intervals are in the mapped result file",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Hypothesize sensitivity",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#hypothesize-sensitivity"
     },
     {
       "claim_id": "hypothesize-extended-trajectory",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/hypothesize/extended_trajectory_summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Exploratory post hoc trajectory; no checkpoint is selected as a replacement result.",
       "manuscript_location": "Prompt-mechanism analysis",
       "metric_definition": "Post hoc all-checkpoint trajectory for training without the Hypothesize line",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/hypothesize/extended_trajectory_summary.json",
       "public_result_sha256": "33a1bae1989f48c1c488a8b53107d572c00923466d49fc85be20d8a1c291773a",
       "reported_value": {
@@ -256,18 +256,18 @@
         "seeds": 3
       },
       "uncertainty_definition": "Sample standard deviation across three seeds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "Hypothesize sensitivity",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#hypothesize-sensitivity"
     },
     {
       "claim_id": "jssp-compile-once",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/jssp/summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "Within-family deployment using an existing JSSP-trained policy; it is not cross-family transfer.",
       "manuscript_location": "JSSP deployment evaluation",
       "metric_definition": "Five-trial feasibility and bounded gap on 50 standard JSSP instances per seed",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/jssp/summary.json",
       "public_result_sha256": "2d2b55a89839b51e5876d13edfab60b1591b674f1697084606749dccf296ba31",
       "reported_value": {
@@ -285,18 +285,18 @@
         "trials_per_instance": 5
       },
       "uncertainty_definition": "Explicit lower/upper interval from published optima and unresolved bounds",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "JSSP compile-once evaluation",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#jssp-compile-once-evaluation"
     },
     {
       "claim_id": "tsp-direct-from-base-rl",
-      "huggingface_path": null,
-      "huggingface_repo": null,
-      "huggingface_revision": null,
+      "huggingface_path": "artifacts/neurips2026/tsp/summary.json",
+      "huggingface_repo": "IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1",
+      "huggingface_revision": "c34da924fbb4f0645e24b6061678bc206dd630a0",
       "limitations": "The primary transfer gate failed. A post-result parser correction changed evaluation semantics and is disclosed; corrected results are not test-blind confirmation.",
       "manuscript_location": "TSP boundary evaluation",
       "metric_definition": "Five-trial TSPLIB feasibility and gap for TSP RL training directly from the base model without an SFT stage",
-      "public_git_commit": null,
+      "public_git_commit": "07a798e7d7eca736cd1ef13a15209d402d401ef6",
       "public_result_path": "artifacts/neurips2026/tsp/summary.json",
       "public_result_sha256": "b55195fe3e34978fdb4f4e9e27ab1ae7dc2e57ff44502f1fb318b5a5410a6b7b",
       "reported_value": {
@@ -316,8 +316,8 @@
         "trials_per_instance": 5
       },
       "uncertainty_definition": "Macro average across three independently trained seeds; per-seed and per-trial results are released",
-      "wandb_panel": null,
-      "wandb_url": null
+      "wandb_panel": "TSP boundary evaluation",
+      "wandb_url": "https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==#tsp-boundary-evaluation"
     }
   ],
   "join_keys": [
@@ -330,6 +330,6 @@
     202,
     303
   ],
-  "status": "sanitized-local-evidence",
+  "status": "published-evidence-v1",
   "title": "Final public evidence index for neural solver synthesis"
 }

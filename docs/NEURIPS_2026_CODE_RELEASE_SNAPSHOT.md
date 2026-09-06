@@ -19,7 +19,7 @@ anonymized NeurIPS supplementary bundle.
 - Hugging Face collection:
   - `https://huggingface.co/collections/IDEALLab/neural-solver-synthesis`
 - W&B final-paper project:
-  - `https://wandb.ai/neural-solver-synthesis/qwen-coder-sds-rl?nw=01nxi1s0ex1`
+  - `https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==`
 
 ## Submodule pins relevant to the release export
 
