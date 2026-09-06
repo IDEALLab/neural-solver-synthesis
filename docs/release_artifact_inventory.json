@@ -83,6 +83,48 @@
       "parser_correction": "post-result and explicitly disclosed"
     }
   },
+  "policy_checkpoints": {
+    "tsp_rl": {
+      "status": "public_and_anonymously_checksum_verified",
+      "repositories": [
+        {
+          "seed": 101,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed101",
+          "revision": "3241ef5e1de219b083283324481d6bc604b6227a"
+        },
+        {
+          "seed": 202,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed202",
+          "revision": "0290cbfb7e9bf45239711cf8885c326272b9dbb7"
+        },
+        {
+          "seed": 303,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-TSP-Hero-seed303",
+          "revision": "1c1b2c23c6ed277d5f6fd75522d840dc09b15450"
+        }
+      ]
+    },
+    "sds_no_hypothesize_step90": {
+      "status": "public_and_anonymously_checksum_verified",
+      "repositories": [
+        {
+          "seed": 101,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed101",
+          "revision": "1271c838d73f9f919df66fbf1ba87068204fad9d"
+        },
+        {
+          "seed": 202,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed202",
+          "revision": "c914264f1193a246b98e2211c884b32f68ecde68"
+        },
+        {
+          "seed": 303,
+          "repo_id": "IDEALLab/Qwen2.5-Coder-14B-Instruct-GRPO-SDS-NoHypothesize-step90-seed303",
+          "revision": "c06552a00c43a2e53f54c4029dc2d65f3ce3ea92"
+        }
+      ]
+    }
+  },
   "final_evidence": {
     "claim_index": "docs/final_evidence_index.json",
     "human_map": "docs/EVIDENCE_MAP.md",
