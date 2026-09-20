@@ -7,12 +7,15 @@ counts, checksums, and immutable remote revisions are recorded in
 
 ## Public Surfaces
 
-- [GitHub release](https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.1)
+- [GitHub release](https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.2)
 - [Immutable Hugging Face evidence](https://huggingface.co/datasets/IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1/tree/c34da924fbb4f0645e24b6061678bc206dd630a0)
-- [Curated W&B report](https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==)
+- [Interactive experiment companion](https://wandb.ai/neural-solver-synthesis/neural-solver-synthesis/reports/Neural-Solver-Synthesis--VmlldzoxNzk3MDk2OQ==)
+- [Aggregate evidence snapshot](https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==)
 
-The W&B report is an aggregated visualization surface. The checksum-verified
-files in GitHub and Hugging Face remain the canonical result store.
+The neutral W&B companion combines training trajectories, ablations, evaluation
+media, and a claim-level reproducibility index. The aggregate snapshot preserves
+the venue-cycle evidence view. The checksum-verified files in GitHub and Hugging
+Face remain the canonical result store.
 
 ## Policy Checkpoints
 
