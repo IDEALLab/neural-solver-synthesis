@@ -21,10 +21,12 @@ python scripts/validate_neurips2026_public_evidence.py
 ## Canonical public entrypoints
 
 - Versioned GitHub release:
-  - https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.0
+  - https://github.com/IDEALLab/neural-solver-synthesis/releases/tag/neurips2026-evidence-v1.0.2
 - Immutable compact evidence:
   - https://huggingface.co/datasets/IDEALLab/Neural-Solver-Synthesis-Final-Evidence-v1/tree/c34da924fbb4f0645e24b6061678bc206dd630a0
-- Curated W&B report:
+- Interactive experiment companion:
+  - https://wandb.ai/neural-solver-synthesis/neural-solver-synthesis/reports/Neural-Solver-Synthesis--VmlldzoxNzk3MDk2OQ==
+- Aggregate evidence snapshot:
   - https://wandb.ai/neural-solver-synthesis/neurips2026-evidence-v2/reports/Neural-Solver-Synthesis:-Final-Evidence--VmlldzoxNzg4MDQ3Nw==
 - Main paper manifest:
   - `experiments/report_sets/paper_public_main_v1.json`
